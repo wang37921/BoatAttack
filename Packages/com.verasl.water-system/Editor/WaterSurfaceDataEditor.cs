@@ -227,7 +227,7 @@ namespace WaterSystem.Data
             {
                         EditorGUI.indentLevel -= 1;
                         // Re-orderable list with wave details
-                        waveList.DoLayoutList();
+                        waveList?.DoLayoutList();
                 /// Type - Directional / Omi-directional
                 //// Amplitude - slider 0.05 - 30
                 //// Wavelength - slider 1 - 200
