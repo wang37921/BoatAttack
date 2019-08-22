@@ -38,7 +38,16 @@ public class GameController : MonoBehaviour
     [SerializeField]
     GameObject _windowHUD;
 
-    float _bestDistance = 0.0f;
+    const string _kBestRecord = "bestrecord";
+    public float BestDistance {
+        get {
+            return PlayerPrefs.GetFloat(_kBestRecord, 0.0f);
+        }
+        set {
+            PlayerPrefs.SetFloat(_kBestRecord, value);
+        }
+    }
+    public bool HasBestRecord => PlayerPrefs.HasKey(_kBestRecord);
 
     public bool IsGaming => _state == GameState.Gaming;
 
@@ -67,9 +76,9 @@ public class GameController : MonoBehaviour
     public void GameOver(float distance)
     {
         float? d = null;
-        if (distance > _bestDistance)
+        if (distance > BestDistance)
         {
-            _bestDistance = distance;
+            BestDistance = distance;
             d = distance;
         }
         _wndGameOver.Show(d);
