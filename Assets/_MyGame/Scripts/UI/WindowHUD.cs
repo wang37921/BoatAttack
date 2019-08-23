@@ -3,8 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WidgetFuel : MonoBehaviour
+
+public class WindowHUD : MonoBehaviour
 {
+    [SerializeField]
+    TMPro.TextMeshProUGUI _txtDistance;
+
+    [SerializeField]
+    TMPro.TextMeshProUGUI _txtHit;
+
     [SerializeField]
     Image[] _drops;
 
@@ -47,5 +54,7 @@ public class WidgetFuel : MonoBehaviour
             }
         }
 
+        _txtDistance.text = AppString.Distance(_myBoat.Distance);
+        _txtHit.text = AppString.Hit(_myBoat.Hit);
     }
 }

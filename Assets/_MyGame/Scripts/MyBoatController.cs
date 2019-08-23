@@ -28,6 +28,7 @@ public class MyBoatController : MonoBehaviour
     Rigidbody _rigidbody;
 
     public float Distance => _distance;
+    public int Hit { get; set; }
 
     public void ResetDistance()
     {
@@ -38,7 +39,6 @@ public class MyBoatController : MonoBehaviour
 
     Vector3 _originPoint;
 
-    public bool Stall = true;
 
     // Start is called before the first frame update
     void Start()
@@ -81,7 +81,7 @@ public class MyBoatController : MonoBehaviour
     public void Crash()
     {
         _crashed = true;
-        GameController.Instance.GameOver(_distance);
+        GameController.Instance.GameOver(_distance, Hit);
     }
 
     public void ResetCrash()
@@ -91,7 +91,7 @@ public class MyBoatController : MonoBehaviour
 
     void OnFuelOver()
     {
-        GameController.Instance.GameOver(_distance);
+        GameController.Instance.GameOver(_distance, Hit);
     }
 
     public bool HasCrash { get { return _crashed; } }

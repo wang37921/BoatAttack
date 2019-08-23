@@ -32,7 +32,14 @@ public class Windsurfer : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        _destroied = true;
-        _rb.useGravity = true;
+        if (!_destroied)
+        {
+            _destroied = true;
+            _rb.useGravity = true;
+
+            var boatCtrl = collision.gameObject.GetComponent<MyBoatController>();
+            if (boatCtrl != null)
+                boatCtrl.Hit += 1;
+        }
     }
 }

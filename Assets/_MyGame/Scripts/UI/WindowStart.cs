@@ -8,17 +8,14 @@ public class WindowStart : MonoBehaviour
     GameObject _groupBestRecord;
     [SerializeField]
     TMPro.TextMeshProUGUI _txtBestRecord;
+    [SerializeField]
+    TMPro.TextMeshProUGUI _txtBestHit;
 
     // Start is called before the first frame update
     void Start()
     {
-        _groupBestRecord.SetActive(GameController.Instance.HasBestRecord);
-        _txtBestRecord.text = string.Format("Best: {0}", AppString.Distance(GameController.Instance.BestDistance));
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        _groupBestRecord.SetActive(GameController.Instance.HasBestRecord || GameController.Instance.HasBestHit);
+        _txtBestRecord.text = AppString.Distance(GameController.Instance.BestDistance);
+        _txtBestHit.text = AppString.Hit(GameController.Instance.BestHit);
     }
 }

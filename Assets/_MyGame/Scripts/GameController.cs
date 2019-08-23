@@ -38,7 +38,7 @@ public class GameController : MonoBehaviour
     [SerializeField]
     GameObject _windowHUD;
 
-    const string _kBestRecord = "bestrecord";
+    public const string _kBestRecord = "bestrecord";
     public float BestDistance {
         get {
             return PlayerPrefs.GetFloat(_kBestRecord, 0.0f);
@@ -48,6 +48,20 @@ public class GameController : MonoBehaviour
         }
     }
     public bool HasBestRecord => PlayerPrefs.HasKey(_kBestRecord);
+
+    public const string _kBestHit = "besthit";
+    public int BestHit
+    {
+        get
+        {
+            return PlayerPrefs.GetInt(_kBestHit, 0);
+        }
+        set
+        {
+            PlayerPrefs.SetInt(_kBestHit, value);
+        }
+    }
+    public bool HasBestHit => PlayerPrefs.HasKey(_kBestHit);
 
     public bool IsGaming => _state == GameState.Gaming;
 
@@ -73,15 +87,21 @@ public class GameController : MonoBehaviour
     //     _state = GameState.Pause;
     // }
 
-    public void GameOver(float distance)
+    public void GameOver(float distance, int hit)
     {
         float? d = null;
+        int? newHit = null;
         if (distance > BestDistance)
         {
             BestDistance = distance;
             d = distance;
         }
-        _wndGameOver.Show(d);
+        if (hit > BestHit)
+        {
+            BestHit = hit;
+            newHit = hit;
+        }
+        _wndGameOver.Show(d, newHit);
         _state = GameState.End;
         _windowHUD.SetActive(false);
     }
@@ -94,6 +114,7 @@ public class GameController : MonoBehaviour
         myboat.ResetDistance();
         myboat.RefillFuel();
         myboat.ResetCrash();
+        myboat.Hit = 0;
         _windowHUD.SetActive(true);
     }
 }
