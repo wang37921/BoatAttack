@@ -116,5 +116,11 @@ public class GameController : MonoBehaviour
         myboat.ResetCrash();
         myboat.Hit = 0;
         _windowHUD.SetActive(true);
+
+        // center to track.
+        var resetPos = myboat.transform.position;
+        resetPos.x = 0.0f;
+        myboat.transform.position = resetPos;
+        myboat.transform.rotation = Quaternion.identity;
     }
 }

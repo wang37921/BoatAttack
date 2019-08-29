@@ -98,4 +98,10 @@ public class MyBoatController : MonoBehaviour
 
     public float LeftFuelPercent { get { return _leftSeconds / _maxSeconds; } }
     public bool HasFuel => _leftSeconds != 0.0f;
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("TrackBlock"))
+            Crash();
+    }
 }

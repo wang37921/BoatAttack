@@ -13,6 +13,9 @@ public class WindowHUD : MonoBehaviour
     TMPro.TextMeshProUGUI _txtHit;
 
     [SerializeField]
+    TMPro.TextMeshProUGUI _txtTsunami;
+
+    [SerializeField]
     Image[] _drops;
 
     [SerializeField]
