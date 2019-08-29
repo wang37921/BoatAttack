@@ -22,7 +22,7 @@ public class MyBoatController : MonoBehaviour
     [SerializeField]
     float _maxTurn = 0.4f;
     [SerializeField]
-    float _accel = 3.0f;
+    float _accel = 1.0f;
 
     float _distance = 0.0f;
     Rigidbody _rigidbody;

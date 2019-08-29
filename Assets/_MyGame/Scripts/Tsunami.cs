@@ -18,7 +18,7 @@ public class Tsunami : MonoBehaviour
     }
 
     [SerializeField]
-    float _force = 1.3f;
+    float _speed = 1.3f;
 
     Rigidbody _rigidbody;
     // Start is called before the first frame update
@@ -31,8 +31,9 @@ public class Tsunami : MonoBehaviour
     void Update()
     {
         if (GameController.Instance.IsGaming)
-        {
-            _rigidbody.AddForce(Vector3.forward * _force, ForceMode.Force);
-        }
+            _rigidbody.velocity = Vector3.forward * _speed;
+        else
+            _rigidbody.velocity = Vector3.zero;
+
     }
 }
