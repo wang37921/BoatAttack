@@ -11,18 +11,21 @@ public class TrackGenerator : MonoBehaviour
 
     [SerializeField]
     GameObject[] _prefabBlocks;
+    [Header("Track Width")]
     [SerializeField]
-    float _blockDisappearSinkDepth = 2.0f;
+    float _trackWidthMin = 0.5f;
     [SerializeField]
-    float _blockSinkDistDepthRatio = 5.0f;
+    float _trackWidthMax = 1.0f;
+    [Header("Block Random Offset In Horizonal")]
     [SerializeField]
-    float _blockSpaceMin = 0.5f;
+    float _offsetInXMin = -3.0f;
     [SerializeField]
-    float _blockSpaceMax = 1.0f;
+    float _offsetInXMax = 3.0f;
+    [Header("Track Length")]
     [SerializeField]
-    bool LeftSide = false;
-
-    float TrackRange => _blockDisappearSinkDepth * _blockSinkDistDepthRatio;
+    float _trackLength = 20.0f;
+    [SerializeField]
+    float _trackOffsetInZ = 5.0f;
 
     List<GameObject> _cachedGameObjects = new List<GameObject>();
     List<GameObject> _presentTrackBlocks = new List<GameObject>();
@@ -38,85 +41,34 @@ public class TrackGenerator : MonoBehaviour
     {
         var myboatPos = _myboat.position;
 
-        var expectedTrackForwardBoundary = myboatPos.z + TrackRange;
-        var expectedTrackBackwardBoundary = myboatPos.z - TrackRange;
+        var trackInZMin = myboatPos.z - _trackOffsetInZ;
+        var trackInZMax = trackInZMin + _trackLength;
+
+        var trackEnd = trackInZMin;
 
         // destroy block
         foreach (var block in _presentTrackBlocks.ToArray())
         {
-            var distInZ = block.transform.localPosition.z - myboatPos.z;
-            if (Mathf.Abs(distInZ) > TrackRange + _blockSpaceMax)
+            var boxCollider = block.GetComponent<BoxCollider>();
+            var blockBegin = block.transform.localPosition.z - boxCollider.bounds.extents.z;
+            var blockEnd = block.transform.localPosition.z + boxCollider.bounds.extents.z;
+            if (blockBegin < trackInZMin)
             {
                 _presentTrackBlocks.Remove(block);
                 block.SetActive(false);
                 _cachedGameObjects.Add(block);
             }
+            else if (blockEnd > trackEnd)
+                trackEnd = blockEnd;
         }
-        // calc current boundary
-        var trackForwardBoundary = 0.0f;
-        var trackBackwardBoundary = 0.0f;
-        if (_presentTrackBlocks.Count != 0)
-        {
-            trackForwardBoundary = _presentTrackBlocks.Max(e => e.transform.localPosition.z + e.GetComponent<BoxCollider>().bounds.extents.z);
-            trackBackwardBoundary = _presentTrackBlocks.Min(e => e.transform.localPosition.z - e.GetComponent<BoxCollider>().bounds.extents.z);
-        }
-        else if (TrackRange > 0.0f)
+        while (trackEnd < trackInZMax)
         {
             var block = RandomGenerateBlock();
-            var boxCollider = block.GetComponent<BoxCollider>();
-            block.transform.localPosition = CalcInitalTrackBlockPosition(boxCollider);
             _presentTrackBlocks.Add(block);
-            trackForwardBoundary = _myboat.localPosition.z + boxCollider.bounds.extents.z;
-            trackBackwardBoundary = _myboat.localPosition.z - boxCollider.bounds.extents.z;
-        }
-
-        // generate block
-        while (trackForwardBoundary < expectedTrackForwardBoundary)
-        {
-            var block = RandomGenerateBlock();
             var boxCollider = block.GetComponent<BoxCollider>();
-            var space = Random.Range(_blockSpaceMin, _blockSpaceMax);
-            block.transform.localPosition = CalcTrackBlockPosition(boxCollider, trackForwardBoundary, true);
-            trackForwardBoundary = block.transform.localPosition.z + boxCollider.bounds.extents.z;
-            _presentTrackBlocks.Add(block);
+            block.transform.localPosition = new Vector3(Random.Range(_offsetInXMin, _offsetInXMax), 0.0f, trackEnd + boxCollider.bounds.extents.z);
+            trackEnd = block.transform.localPosition.z + boxCollider.bounds.extents.z;
         }
-        while (trackBackwardBoundary > expectedTrackBackwardBoundary)
-        {
-            var block = RandomGenerateBlock();
-            var boxCollider = block.GetComponent<BoxCollider>();
-            var space = Random.Range(_blockSpaceMin, _blockSpaceMax);
-            block.transform.localPosition = CalcTrackBlockPosition(boxCollider, trackBackwardBoundary, false);
-            trackBackwardBoundary = block.transform.localPosition.z - boxCollider.bounds.extents.z;
-            _presentTrackBlocks.Add(block);
-        }
-
-        // adjust block sink depth
-        foreach (var block in _presentTrackBlocks)
-        {
-            var distInZ = block.transform.localPosition.z - myboatPos.z;
-            distInZ = Mathf.Abs(distInZ);
-            var sinkDepth = distInZ / _blockSinkDistDepthRatio;
-            var pos = block.transform.localPosition;
-            pos.y = -sinkDepth;
-            block.transform.localPosition = pos;
-        }
-    }
-
-    Vector3 CalcInitalTrackBlockPosition(BoxCollider boxCollider)
-    {
-        return new Vector3(
-            LeftSide ? -boxCollider.bounds.extents.x : boxCollider.bounds.extents.x,
-            0.0f,
-            _myboat.localPosition.z);
-    }
-
-    Vector3 CalcTrackBlockPosition(BoxCollider boxCollider, float boundary, bool isForward)
-    {
-        var space = Random.Range(_blockSpaceMin, _blockSpaceMax);
-        return new Vector3(
-            LeftSide ? -boxCollider.bounds.extents.x : boxCollider.bounds.extents.x,
-            0.0f,
-            isForward ? boundary + boxCollider.bounds.extents.z + space : boundary - boxCollider.bounds.extents.z - space);
     }
 
     GameObject RandomGenerateBlock()
