@@ -23,12 +23,17 @@ public class WindowHUD : MonoBehaviour
     [SerializeField]
     float _validDropAlpha = 1.0f;
 
+    [SerializeField]
+    float _tsunamiWarningDistance = 30.0f;
+
     MyBoatController _myBoat;
+    Tsunami _tsunami;
 
     // Start is called before the first frame update
     void Start()
     {
         _myBoat = FindObjectOfType<MyBoatController>();
+        _tsunami = FindObjectOfType<Tsunami>();
     }
 
     // Update is called once per frame
@@ -59,5 +64,9 @@ public class WindowHUD : MonoBehaviour
 
         _txtDistance.text = AppString.Distance(_myBoat.Distance);
         _txtHit.text = AppString.Hit(_myBoat.Hit);
+
+        var distance = Mathf.Abs(_tsunami.transform.position.z - _myBoat.transform.position.z);
+        _txtTsunami.text = AppString.Distance(distance);
+        _txtTsunami.color = Color.Lerp(Color.white, Color.red, 1.0f - distance / _tsunamiWarningDistance);
     }
 }

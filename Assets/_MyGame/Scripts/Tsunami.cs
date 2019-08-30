@@ -19,6 +19,8 @@ public class Tsunami : MonoBehaviour
 
     [SerializeField]
     float _speed = 1.3f;
+    [SerializeField]
+    float _tsunamiInitDistance = 30.0f;
 
     Rigidbody _rigidbody;
     // Start is called before the first frame update
@@ -27,13 +29,24 @@ public class Tsunami : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void StartMove(MyBoatController myboat)
     {
-        if (GameController.Instance.IsGaming)
-            _rigidbody.velocity = Vector3.forward * _speed;
-        else
-            _rigidbody.velocity = Vector3.zero;
-
+        var boatPos = myboat.transform.position;
+        boatPos.x = 0;
+        transform.position = boatPos + Vector3.back * _tsunamiInitDistance;
+        _rigidbody.velocity = Vector3.forward * _speed;
     }
+
+    public void StopMove()
+    {
+        _rigidbody.velocity = Vector3.zero;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var boatCtrl = other.gameObject.GetComponent<MyBoatController>();
+        if (boatCtrl != null)
+            boatCtrl.Crash();
+    }
+
 }

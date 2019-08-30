@@ -37,6 +37,8 @@ public class GameController : MonoBehaviour
     WindowGameOver _wndGameOver;
     [SerializeField]
     GameObject _windowHUD;
+    [SerializeField]
+    Tsunami _tsunami;
 
     public const string _kBestRecord = "bestrecord";
     public float BestDistance {
@@ -79,6 +81,8 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(2.0f);
         _state = GameState.Gaming;
         _windowHUD.SetActive(true);
+        var myboat = FindObjectOfType<MyBoatController>();
+        _tsunami.StartMove(myboat);
     }
 
     // public void Pause()
@@ -104,6 +108,7 @@ public class GameController : MonoBehaviour
         _wndGameOver.Show(d, newHit);
         _state = GameState.End;
         _windowHUD.SetActive(false);
+        // _tsunami.StopMove();
     }
 
     public void Restart()
@@ -116,6 +121,8 @@ public class GameController : MonoBehaviour
         myboat.ResetCrash();
         myboat.Hit = 0;
         _windowHUD.SetActive(true);
+
+        _tsunami.StartMove(myboat);
 
         // center to track.
         var resetPos = myboat.transform.position;
