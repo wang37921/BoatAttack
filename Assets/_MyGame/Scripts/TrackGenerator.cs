@@ -13,9 +13,9 @@ public class TrackGenerator : MonoBehaviour
     GameObject[] _prefabBlocks;
     [Header("Track Width")]
     [SerializeField]
-    float _trackWidthMin = 0.5f;
+    float _trackWidthMin = 25.0f;
     [SerializeField]
-    float _trackWidthMax = 1.0f;
+    float _trackWidthMax = 30.0f;
     [Header("Block Random Offset In Horizonal")]
     [SerializeField]
     float _offsetInXMin = -3.0f;
@@ -49,9 +49,10 @@ public class TrackGenerator : MonoBehaviour
         // destroy block
         foreach (var block in _presentTrackBlocks.ToArray())
         {
-            var boxCollider = block.GetComponent<BoxCollider>();
-            var blockBegin = block.transform.localPosition.z - boxCollider.bounds.extents.z;
-            var blockEnd = block.transform.localPosition.z + boxCollider.bounds.extents.z;
+            var boxColliders = block.GetComponentsInChildren<BoxCollider>();
+            var blockHalfLength = boxColliders.Max(e => e.bounds.extents.z);
+            var blockBegin = block.transform.localPosition.z - blockHalfLength;
+            var blockEnd = block.transform.localPosition.z + blockHalfLength;
             if (blockBegin < trackInZMin)
             {
                 _presentTrackBlocks.Remove(block);
@@ -65,27 +66,41 @@ public class TrackGenerator : MonoBehaviour
         {
             var block = RandomGenerateBlock();
             _presentTrackBlocks.Add(block);
-            var boxCollider = block.GetComponent<BoxCollider>();
-            block.transform.localPosition = new Vector3(Random.Range(_offsetInXMin, _offsetInXMax), 0.0f, trackEnd + boxCollider.bounds.extents.z);
-            trackEnd = block.transform.localPosition.z + boxCollider.bounds.extents.z;
+            var boxColliders = block.GetComponentsInChildren<BoxCollider>();
+            var blockHalfLength = boxColliders.Max(e => e.bounds.extents.z);
+            block.transform.localPosition = new Vector3(Random.Range(_offsetInXMin, _offsetInXMax), 0.0f, trackEnd + blockHalfLength);
+            trackEnd = block.transform.localPosition.z + blockHalfLength;
         }
     }
 
     GameObject RandomGenerateBlock()
     {
-        GameObject gameObject = null;
+        GameObject blockObject = null;
         if (_cachedGameObjects.Count > 0)
         {
             var fetchIndex = Random.Range(0, _cachedGameObjects.Count);
-            gameObject = _cachedGameObjects[fetchIndex];
-            gameObject.SetActive(true);
+            blockObject = _cachedGameObjects[fetchIndex];
+            blockObject.SetActive(true);
             _cachedGameObjects.RemoveAt(fetchIndex);
         }
         else
         {
-            gameObject = Instantiate(_prefabBlocks[Random.Range(0, _prefabBlocks.Length)], transform);
-            gameObject.layer = LayerMask.NameToLayer("TrackBlock");
+            var trackWidth = Random.Range(_trackWidthMin, _trackWidthMax);
+            var halfTrackWidth = trackWidth / 2.0f;
+
+            blockObject = new GameObject("track block");
+            blockObject.transform.SetParent(transform);
+
+            var leftBlock = Instantiate(_prefabBlocks[Random.Range(0, _prefabBlocks.Length)], blockObject.transform);
+            var leftBlockCollider = leftBlock.GetComponent<BoxCollider>();
+            leftBlock.layer = LayerMask.NameToLayer("TrackBlock");
+            leftBlock.transform.localPosition = new Vector3(-halfTrackWidth - leftBlockCollider.bounds.extents.x, 0.0f, 0.0f);
+
+            var rightBlock = Instantiate(_prefabBlocks[Random.Range(0, _prefabBlocks.Length)], blockObject.transform);
+            var rightBlockCollider = rightBlock.GetComponent<BoxCollider>();
+            rightBlock.layer = LayerMask.NameToLayer("TrackBlock");
+            rightBlock.transform.localPosition = new Vector3(halfTrackWidth + rightBlockCollider.bounds.extents.x, 0.0f, 0.0f);
         }
-        return gameObject;
+        return blockObject;
     }
 }

@@ -210,7 +210,7 @@ Transform:
   m_GameObject: {fileID: 19479200}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -30}
-  m_LocalScale: {x: 30, y: 10, z: 10}
+  m_LocalScale: {x: 100, y: 10, z: 10}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 11
@@ -3240,8 +3240,8 @@ MonoBehaviour:
   - {fileID: 1284506016227826, guid: f2ac51e00e24ec74295d01a4e5752ef0, type: 3}
   - {fileID: 1353471384135722, guid: e9c22aa81b53e4c4496d78efbff45e6e, type: 3}
   - {fileID: 1663764938233920, guid: 393bb1456e9f83948ba1f8fa7a60a21a, type: 3}
-  _blockSpaceMin: 0.5
-  _blockSpaceMax: 1
+  _trackWidthMin: 25
+  _trackWidthMax: 30
   _offsetInXMin: -10
   _offsetInXMax: 10
   _trackLength: 500
@@ -5437,12 +5437,12 @@ PrefabInstance:
     - target: {fileID: 5832311908562533212, guid: 57584fdc753bd4048bda8176e0c2ee73,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000029538258
+      value: 0.000000029538363
       objectReference: {fileID: 0}
     - target: {fileID: 5832311908562533212, guid: 57584fdc753bd4048bda8176e0c2ee73,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.000000017655687
+      value: -0.000000017655882
       objectReference: {fileID: 0}
     - target: {fileID: 5832311908562533212, guid: 57584fdc753bd4048bda8176e0c2ee73,
         type: 3}
