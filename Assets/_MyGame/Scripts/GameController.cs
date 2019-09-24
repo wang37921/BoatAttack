@@ -32,7 +32,7 @@ public class GameController : MonoBehaviour
     [SerializeField]
     Cinemachine.CinemachineVirtualCamera _vcamGaming;
     [SerializeField]
-    GameObject _windowStart;
+    GameObject _windowTimer;
     [SerializeField]
     WindowGameOver _wndGameOver;
     [SerializeField]
@@ -71,7 +71,7 @@ public class GameController : MonoBehaviour
     public void StartGame()
     {
         _vcamGaming.gameObject.SetActive(true);
-        _windowStart.SetActive(false);
+        _windowTimer.SetActive(false);
         StopCoroutine("_StartGame");
         StartCoroutine("_StartGame");
     }
