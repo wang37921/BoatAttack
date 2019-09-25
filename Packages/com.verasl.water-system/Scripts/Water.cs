@@ -53,6 +53,7 @@ namespace WaterSystem
 
         void OnEnable()
         {
+            GerstnerWavesJobs.Cleanup();
             if (!computeOverride)
                 useComputeBuffer = SystemInfo.supportsComputeShaders &&
                                    Application.platform != RuntimePlatform.WebGLPlayer &&
@@ -62,20 +63,23 @@ namespace WaterSystem
             Init();
             RenderPipelineManager.beginCameraRendering += BeginCameraRendering;
 
-            if(resources == null)
+            if (resources == null)
             {
                 resources = Resources.Load("WaterResources") as WaterResources;
             }
         }
 
-        private void OnDisable() {
+        private void OnDisable()
+        {
             Cleanup();
         }
 
         void Cleanup()
         {
-            if(Application.isPlaying)
-                GerstnerWavesJobs.Cleanup();
+            if (Application.isPlaying)
+            {
+                // GerstnerWavesJobs.Cleanup();
+            }
             RenderPipelineManager.beginCameraRendering -= BeginCameraRendering;
             if (_depthCam)
             {
@@ -86,7 +90,7 @@ namespace WaterSystem
             {
                 SafeDestroy(_depthTex);
             }
-            if(_waveBuffer != null)
+            if (_waveBuffer != null)
                 _waveBuffer.Dispose();
         }
 
@@ -101,7 +105,7 @@ namespace WaterSystem
 
         private void SafeDestroy(Object o)
         {
-            if(Application.isPlaying)
+            if (Application.isPlaying)
                 Destroy(o);
             else
                 DestroyImmediate(o);
@@ -124,8 +128,9 @@ namespace WaterSystem
             Shader.SetGlobalFloat("_GlobalTime", waterTime);
         }
 
-        private void LateUpdate() {
-            if(Application.isPlaying)
+        private void LateUpdate()
+        {
+            if (Application.isPlaying)
                 GerstnerWavesJobs.UpdateHeights();
         }
 
@@ -156,24 +161,24 @@ namespace WaterSystem
             Shader.SetGlobalFloat("_MaxWaveHeight", _maxWaveHeight);
             Shader.SetGlobalFloat("_MaxDepth", surfaceData._waterMaxVisibility);
 
-            switch(settingsData.refType)
+            switch (settingsData.refType)
             {
                 case ReflectionType.Cubemap:
-                Shader.EnableKeyword("_REFLECTION_CUBEMAP");
-                Shader.DisableKeyword("_REFLECTION_PROBES");
-                Shader.DisableKeyword("_REFLECTION_PLANARREFLECTION");
-                Shader.SetGlobalTexture("_CubemapTexture", settingsData.cubemapRefType);
-                break;
+                    Shader.EnableKeyword("_REFLECTION_CUBEMAP");
+                    Shader.DisableKeyword("_REFLECTION_PROBES");
+                    Shader.DisableKeyword("_REFLECTION_PLANARREFLECTION");
+                    Shader.SetGlobalTexture("_CubemapTexture", settingsData.cubemapRefType);
+                    break;
                 case ReflectionType.ReflectionProbe:
-                Shader.DisableKeyword("_REFLECTION_CUBEMAP");
-                Shader.EnableKeyword("_REFLECTION_PROBES");
-                Shader.DisableKeyword("_REFLECTION_PLANARREFLECTION");
-                break;
+                    Shader.DisableKeyword("_REFLECTION_CUBEMAP");
+                    Shader.EnableKeyword("_REFLECTION_PROBES");
+                    Shader.DisableKeyword("_REFLECTION_PLANARREFLECTION");
+                    break;
                 case ReflectionType.PlanarReflection:
-                Shader.DisableKeyword("_REFLECTION_CUBEMAP");
-                Shader.DisableKeyword("_REFLECTION_PROBES");
-                Shader.EnableKeyword("_REFLECTION_PLANARREFLECTION");
-                break;
+                    Shader.DisableKeyword("_REFLECTION_CUBEMAP");
+                    Shader.DisableKeyword("_REFLECTION_PROBES");
+                    Shader.EnableKeyword("_REFLECTION_PLANARREFLECTION");
+                    break;
             }
 
             Shader.SetGlobalInt("_WaveCount", _waves.Length);
@@ -193,7 +198,7 @@ namespace WaterSystem
                 Shader.SetGlobalVectorArray("waveData", GetWaveData());
             }
             //CPU side
-            if(GerstnerWavesJobs.init == false && Application.isPlaying)
+            if (GerstnerWavesJobs.init == false && Application.isPlaying)
                 GerstnerWavesJobs.Init();
         }
 
@@ -203,14 +208,14 @@ namespace WaterSystem
             for (int i = 0; i < _waves.Length; i++)
             {
                 waveData[i] = new Vector4(_waves[i].amplitude, _waves[i].direction, _waves[i].wavelength, _waves[i].onmiDir);
-                waveData[i+10] = new Vector4(_waves[i].origin.x, _waves[i].origin.y, 0, 0);
+                waveData[i + 10] = new Vector4(_waves[i].origin.x, _waves[i].origin.y, 0, 0);
             }
             return waveData;
         }
 
         public void SetupWaves(bool custom)
         {
-            if(!custom)
+            if (!custom)
             {
                 //create basic waves based off basic wave settings
                 Random.State backupSeed = Random.state;
@@ -243,7 +248,7 @@ namespace WaterSystem
 
         public void GenerateColorRamp()
         {
-            if(_rampTexture == null)
+            if (_rampTexture == null)
                 _rampTexture = new Texture2D(128, 4, TextureFormat.ARGB32, false, false);
             _rampTexture.wrapMode = TextureWrapMode.Clamp;
 
@@ -260,23 +265,26 @@ namespace WaterSystem
             }
             for (int i = 0; i < 128; i++)
             {
-                switch(surfaceData._foamSettings.foamType)
+                switch (surfaceData._foamSettings.foamType)
                 {
                     case 0:
-                    {
-                        // default
-                        cols[i + 256] = _defaultFoamRamp.GetPixelBilinear((float)i / 128f , 0.5f);
-                    }break;
+                        {
+                            // default
+                            cols[i + 256] = _defaultFoamRamp.GetPixelBilinear((float)i / 128f, 0.5f);
+                        }
+                        break;
                     case 1:
-                    {
-                        // simple
-                        cols[i + 256] = _defaultFoamRamp.GetPixelBilinear(surfaceData._foamSettings.basicFoam.Evaluate((float)i / 128f) , 0.5f);
-                    }break;
+                        {
+                            // simple
+                            cols[i + 256] = _defaultFoamRamp.GetPixelBilinear(surfaceData._foamSettings.basicFoam.Evaluate((float)i / 128f), 0.5f);
+                        }
+                        break;
                     case 2:
-                    {
-                        // custom
-                        cols[i + 256] = Color.black;
-                    }break;
+                        {
+                            // custom
+                            cols[i + 256] = Color.black;
+                        }
+                        break;
                 }
             }
             _rampTexture.SetPixels(cols);
@@ -292,7 +300,7 @@ namespace WaterSystem
         public void CaptureDepthMap()
         {
             //Generate the camera
-            if(_depthCam == null)
+            if (_depthCam == null)
             {
                 GameObject go = new GameObject("depthCamera");//create the cameraObject
                 go.hideFlags = HideFlags.HideAndDontSave;
@@ -312,7 +320,7 @@ namespace WaterSystem
             _depthCam.orthographic = true;
             _depthCam.orthographicSize = 250;//hardcoded = 1k area - TODO
             //_depthCam.depthTextureMode = DepthTextureMode.Depth;
-            _depthCam.nearClipPlane =0.1f;
+            _depthCam.nearClipPlane = 0.1f;
             _depthCam.farClipPlane = surfaceData._waterMaxVisibility;
             _depthCam.allowHDR = false;
             _depthCam.allowMSAA = false;
@@ -333,27 +341,28 @@ namespace WaterSystem
             // set depthbufferParams for depth cam(since it doesnt exist and only temporary)
             float n = _depthCam.nearClipPlane;
             float f = _depthCam.farClipPlane;
-            Vector4 zParams = new Vector4(n, f, f / (f-n), f * n / (n-f));
+            Vector4 zParams = new Vector4(n, f, f / (f - n), f * n / (n - f));
             //Vector4 zParams = new Vector4(1-f/n, f/n, (1-f/n)/f, (f/n)/f);//2015
             Shader.SetGlobalVector("_depthCamZParams", zParams);
-            
-/*            #if UNITY_EDITOR
-            Texture2D tex2D = new Texture2D(1024, 1024, TextureFormat.Alpha8, false);
-            Graphics.CopyTexture(_depthTex, tex2D);
-            byte[] image = tex2D.EncodeToPNG();
-            System.IO.File.WriteAllBytes(Application.dataPath + "/WaterDepth.png", image);
-            #endif*/
-            
+
+            /*            #if UNITY_EDITOR
+                        Texture2D tex2D = new Texture2D(1024, 1024, TextureFormat.Alpha8, false);
+                        Graphics.CopyTexture(_depthTex, tex2D);
+                        byte[] image = tex2D.EncodeToPNG();
+                        System.IO.File.WriteAllBytes(Application.dataPath + "/WaterDepth.png", image);
+                        #endif*/
+
             _depthCam.enabled = false;
             _depthCam.targetTexture = null;
         }
 
-        private void OnDrawGizmos() {
-            if(!Application.isPlaying)
+        private void OnDrawGizmos()
+        {
+            if (!Application.isPlaying)
             {
-                #if UNITY_EDITOR
+#if UNITY_EDITOR
                 waterTime = (float)UnityEditor.EditorApplication.timeSinceStartup;
-                #endif
+#endif
                 Shader.SetGlobalFloat("_GlobalTime", waterTime);
             }
         }

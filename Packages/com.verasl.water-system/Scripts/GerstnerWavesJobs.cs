@@ -8,9 +8,9 @@ using WaterSystem.Data;
 
 namespace WaterSystem
 {
-	/// <summary>
-	/// C# Jobs system version of the Gerstner waves implimentation
-	/// </summary>
+    /// <summary>
+    /// C# Jobs system version of the Gerstner waves implimentation
+    /// </summary>
     public static class GerstnerWavesJobs
     {
         //General variables
@@ -59,19 +59,25 @@ namespace WaterSystem
 
         public static void Cleanup()
         {
-            Debug.LogWarning("Cleaning up GerstnerWaves");
             waterHeightHandle.Complete();
             waterSimpleHeightHandle.Complete();
 
             //Cleanup native arrays
-            waveData.Dispose();
-            tempNullNormal.Dispose();
+            if (waveData.IsCreated)
+                waveData.Dispose();
+            if (tempNullNormal.IsCreated)
+                tempNullNormal.Dispose();
 
-            positions.Dispose();
-            wavePos.Dispose();
-            simplePositions.Dispose();
-            waveSimplePos.Dispose();
-            waveSimpleNormal.Dispose();
+            if (positions.IsCreated)
+                positions.Dispose();
+            if (wavePos.IsCreated)
+                wavePos.Dispose();
+            if (simplePositions.IsCreated)
+                simplePositions.Dispose();
+            if (waveSimplePos.IsCreated)
+                waveSimplePos.Dispose();
+            if (waveSimpleNormal.IsCreated)
+                waveSimpleNormal.Dispose();
         }
 
         public static void UpdateSamplePoints(float3[] samplePoints, int guid, bool simple)
@@ -165,6 +171,7 @@ namespace WaterSystem
                     outNormal = waveSimpleNormal,
                     normal = 1
                 };
+
                 // dependant on job4
                 waterSimpleHeightHandle = waterSimpleHeight.Schedule(simplePositionCount, 32);
 

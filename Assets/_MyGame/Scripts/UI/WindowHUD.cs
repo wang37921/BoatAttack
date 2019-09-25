@@ -14,9 +14,14 @@ public class WindowHUD : MonoBehaviour
 
     [SerializeField]
     TMPro.TextMeshProUGUI _txtTsunami;
+    [SerializeField]
+    TMPro.TextMeshProUGUI _txtStar;
 
     [SerializeField]
     Image[] _drops;
+
+    [SerializeField]
+    Image _nowHP;
 
     [SerializeField]
     float _invalidDropAlpha = 0.5f;
@@ -64,9 +69,13 @@ public class WindowHUD : MonoBehaviour
 
         _txtDistance.text = AppString.Distance(_myBoat.Distance);
         _txtHit.text = AppString.Hit(_myBoat.Hit);
+        _txtStar.text = _myBoat.starCount.ToString();
 
         var distance = Mathf.Abs(_tsunami.transform.position.z - _myBoat.transform.position.z);
         _txtTsunami.text = AppString.Distance(distance);
         _txtTsunami.color = Color.Lerp(Color.white, Color.red, 1.0f - distance / _tsunamiWarningDistance);
+
+        _nowHP.fillAmount = (float)_myBoat.HP / _myBoat.maxHP;
+
     }
 }

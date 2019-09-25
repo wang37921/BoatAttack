@@ -7,6 +7,7 @@ TagManager:
   - boat
   - ground
   - target
+  - star
   layers:
   - Default
   - TransparentFX
@@ -22,8 +23,8 @@ TagManager:
   - Boat
   - TrackBlock
   - Tsunami
-  - 
-  - 
+  - End
+  - Star
   - 
   - 
   - 

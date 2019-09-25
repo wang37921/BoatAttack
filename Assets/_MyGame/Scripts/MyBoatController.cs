@@ -6,6 +6,15 @@ using BoatAttack.Boat;
 
 public class MyBoatController : MonoBehaviour
 {
+    public int maxHP = 100;
+    [HideInInspector]
+    public int HP = 100;
+    [HideInInspector]
+    public int starCount = 0;
+
+    [SerializeField]
+    int _HPExpend = 30;
+
     [ReadOnly]
     [SerializeField]
     float _leftSeconds = 0.0f;
@@ -46,6 +55,7 @@ public class MyBoatController : MonoBehaviour
         _leftSeconds = _maxSeconds;
         _rigidbody = GetComponent<Rigidbody>();
         _originPoint = transform.position;
+        HP = maxHP;
     }
 
     // Update is called once per frame
@@ -101,7 +111,28 @@ public class MyBoatController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("TrackBlock"))
-            Crash();
+        if (GameController.Instance.IsGaming && collision.gameObject.layer == LayerMask.NameToLayer("TrackBlock"))
+        {
+            HP -= _HPExpend;
+            if (HP <= 0)
+            {
+                HP = 0;
+                Crash();
+            }
+            else
+                GameController.Instance.Reset();
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var levelEnd = other.GetComponent<LevelEnd>();
+        if (GameController.Instance.IsGaming && levelEnd)
+            GameController.Instance.End(levelEnd.NextLevel, starCount);
+        else if (GameController.Instance.IsGaming && other.gameObject.layer == LayerMask.NameToLayer("Star"))
+        {
+            Destroy(other.gameObject);
+            starCount++;
+        }
     }
 }

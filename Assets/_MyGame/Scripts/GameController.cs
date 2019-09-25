@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using DG.Tweening;
 
 public enum GameState
 {
-    Start, 
-    Gaming, 
-    Pause, 
-    End, 
+    Start,
+    Gaming,
+    Pause,
+    End,
 }
 
 [DefaultExecutionOrder(-3000)]
@@ -23,6 +26,14 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        _blackMask.color = Color.black;
+        _blackMask.gameObject.SetActive(true);
+    }
+
+    private void Start()
+    {
+        _blackMask.DOFade(0, 0.15f);
+        _allStarCount = GameObject.FindGameObjectsWithTag("star").Length;
     }
 
     GameState _state = GameState.Start;
@@ -38,14 +49,25 @@ public class GameController : MonoBehaviour
     [SerializeField]
     GameObject _windowHUD;
     [SerializeField]
+    GameObject _windowNext;
+    [SerializeField]
+    RawImage _blackMask;
+    [SerializeField]
     Tsunami _tsunami;
+    int _allStarCount = 0;
+
+
+    int _nextLevel;
 
     public const string _kBestRecord = "bestrecord";
-    public float BestDistance {
-        get {
+    public float BestDistance
+    {
+        get
+        {
             return PlayerPrefs.GetFloat(_kBestRecord, 0.0f);
         }
-        set {
+        set
+        {
             PlayerPrefs.SetFloat(_kBestRecord, value);
         }
     }
@@ -72,13 +94,13 @@ public class GameController : MonoBehaviour
     {
         _vcamGaming.gameObject.SetActive(true);
         _windowTimer.SetActive(false);
-        StopCoroutine("_StartGame");
-        StartCoroutine("_StartGame");
+        _StartGame();
     }
 
-    IEnumerator _StartGame()
+    // IEnumerator _StartGame()
+    void _StartGame()
     {
-        yield return new WaitForSeconds(2.0f);
+        // yield return new WaitForSeconds(2.0f);
         _state = GameState.Gaming;
         _windowHUD.SetActive(true);
         var myboat = FindObjectOfType<MyBoatController>();
@@ -113,14 +135,44 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
-        _state = GameState.Gaming;
-        _wndGameOver.Hide();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void End(int nextlevel, int getStarCount)
+    {
+        _nextLevel = nextlevel;
+        Tsunami.Instance.StopMove();
+        _windowHUD.SetActive(false);
+        _windowNext.SetActive(true);
+        _windowNext.GetComponent<WindowNext>().ShowStar(_allStarCount, getStarCount);
+        _state = GameState.End;
+    }
+
+    public void Next()
+    {
+        if (_nextLevel >= 0 && _nextLevel < SceneManager.sceneCountInBuildSettings)
+        {
+            _blackMask.DOFade(1, 0.15f).onComplete = () =>
+            {
+                SceneManager.LoadScene(_nextLevel);
+            };
+        }
+        else
+        {
+            Debug.LogWarning("All Pass!");
+        }
+    }
+
+    public void Reset()
+    {
+        // _state = GameState.Gaming;
+        // _wndGameOver.Hide();
         var myboat = FindObjectOfType<MyBoatController>();
         myboat.ResetDistance();
         myboat.RefillFuel();
         myboat.ResetCrash();
         myboat.Hit = 0;
-        _windowHUD.SetActive(true);
+        // _windowHUD.SetActive(true);
 
         _tsunami.StartMove(myboat);
 
@@ -129,5 +181,8 @@ public class GameController : MonoBehaviour
         resetPos.x = 0.0f;
         myboat.transform.position = resetPos;
         myboat.transform.rotation = Quaternion.identity;
+        myboat.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        myboat.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
     }
+
 }
