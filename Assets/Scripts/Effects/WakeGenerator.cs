@@ -16,6 +16,8 @@ namespace BoatAttack.Boat
         public float _genDistance = 0.5f; // distance to make new segments
         public float _maxAge = 5f; // how long the wake lasts for
 
+        public ParticleSystem[] _waters;
+
         void OnEnable()
         {
             // Initial setup for wakes
@@ -33,7 +35,10 @@ namespace BoatAttack.Boat
                     go.hideFlags = HideFlags.HideAndDontSave;
                 }
             }
+            _myboat = FindObjectOfType<MyBoatController>();
         }
+
+        MyBoatController _myboat;
 
         void OnDisable()
         {
@@ -46,6 +51,15 @@ namespace BoatAttack.Boat
 
         void Update()
         {
+            foreach (var water in _waters)
+            {
+                if (_myboat.InWater && water.isStopped)
+                    water.Play(true);
+                else if (!_myboat.InWater && !water.isStopped)
+                    water.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            }
+
+
             Vector3 origin;
             //For each wake pair
             var wCount = _wakes.Count;
@@ -86,7 +100,7 @@ namespace BoatAttack.Boat
                         }
                     }
                     ///////////////////// Create the line renderer points ///////////////////////////////
-                    
+
                     _wake.lines[s]._lineRenderer.positionCount = pointCount + 1;
                     _wake.lines[s]._lineRenderer.SetPosition(0, origin);
                     for (var i = 0; i < pointCount; i++)
@@ -125,7 +139,7 @@ namespace BoatAttack.Boat
             }
             foreach (Wake w in _wakes)
             {
-                
+
                 foreach (WakeLine wl in w.lines)
                 {
                     int side = 0;
@@ -133,7 +147,7 @@ namespace BoatAttack.Boat
                     foreach (WakePoint wp in wl.points)
                     {
                         Gizmos.DrawSphere(wp.pos, (_maxAge - wp.age) * 0.01f);
-                        if(pre != Vector3.zero)
+                        if (pre != Vector3.zero)
                             Gizmos.DrawLine(wp.pos, pre);
                         pre = wp.pos;
                     }

@@ -24,7 +24,7 @@ namespace BoatAttack
         void RandomizeHUE()
         {
             float hue = Random.Range(0f, 1f);
-            
+
             if (renderers != null || renderers.Length > 0)
             {
                 for (int i = 0; i < renderers.Length; i++)
@@ -32,7 +32,7 @@ namespace BoatAttack
                     if (renderers[i] != null)
                     {
                         // Set as MPB in editor but in playmode(runtime) create instance for SRP batcher to work
-                        if (Application.isPlaying)
+                        if (Application.isPlaying && renderers[i].isVisible)
                         {
                             renderers[i].material.SetFloat("_Hue", hue);
                         }

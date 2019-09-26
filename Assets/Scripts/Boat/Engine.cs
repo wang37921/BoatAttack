@@ -21,6 +21,8 @@ namespace BoatAttack.Boat
         private int _guid;
         private float yHeight;
 
+        public bool InWater => yHeight > -0.1f;
+
         public Vector3 enginePosition;
         private Vector3 engineDir;
 
@@ -52,7 +54,7 @@ namespace BoatAttack.Boat
         /// <param name="modifier">Acceleration modifier, adds force in the 0-1 range</param>
         public void Accel(float modifier)
         {
-            if (yHeight > -0.1f) // if the engine is deeper than 0.1
+            // if (yHeight > -0.1f) // if the engine is deeper than 0.1
             {
                 modifier = Mathf.Clamp(modifier, 0f, 1f); // clamp for reasonable values
                 Vector3 forward = transform.forward;

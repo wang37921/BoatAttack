@@ -153,7 +153,7 @@ public class GameController : MonoBehaviour
         if (_nextLevel >= 0 && _nextLevel < SceneManager.sceneCountInBuildSettings)
         {
             _blackMask.DOFade(1, 0.15f).onComplete = () =>
-            {
+            {                
                 SceneManager.LoadScene(_nextLevel);
             };
         }
