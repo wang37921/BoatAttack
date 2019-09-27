@@ -11,6 +11,8 @@ namespace BoatAttack
     {
         public MeshRenderer[] renderers;
 
+        public bool enable;
+
         private void OnEnable()
         {
             RandomizeHUE();
@@ -45,6 +47,16 @@ namespace BoatAttack
                     }
                 }
             }
+        }
+
+        private void OnBecameVisible()
+        {
+            enable = true;
+        }
+
+        private void OnBecameInvisible()
+        {
+            enable = false;
         }
     }
 }

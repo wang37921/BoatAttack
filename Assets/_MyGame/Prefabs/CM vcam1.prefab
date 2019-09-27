@@ -60,10 +60,10 @@ MonoBehaviour:
   m_LookaheadSmoothing: 10
   m_LookaheadIgnoreY: 0
   m_XDamping: 1
-  m_YDamping: 1
+  m_YDamping: 0.3
   m_ZDamping: 1
   m_ScreenX: 0.5
-  m_ScreenY: 0.739
+  m_ScreenY: 0.73899996
   m_CameraDistance: 70
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0

@@ -32,7 +32,7 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
-        _blackMask.DOFade(0, 0.15f);
+        _blackMask.DOFade(0, 0.3f);
         _allStarCount = GameObject.FindGameObjectsWithTag("star").Length;
     }
 
@@ -97,21 +97,28 @@ public class GameController : MonoBehaviour
         _StartGame();
     }
 
-    // IEnumerator _StartGame()
     void _StartGame()
     {
-        // yield return new WaitForSeconds(2.0f);
         _state = GameState.Gaming;
         _windowHUD.SetActive(true);
         var myboat = FindObjectOfType<MyBoatController>();
         _tsunami.StartMove(myboat);
     }
 
-    // public void Pause()
-    // {
-    //     Time.timeScale = 0.0f;
-    //     _state = GameState.Pause;
-    // }
+    public void ResetGame()
+    {
+        _vcamGaming.gameObject.SetActive(true);
+        _windowTimer.SetActive(false);
+        _state = GameState.Gaming;
+        _windowHUD.SetActive(true);
+
+    }
+
+    public void Pause()
+    {
+        Time.timeScale = 0.0f;
+        _state = GameState.Pause;
+    }
 
     public void GameOver(float distance, int hit)
     {
@@ -138,13 +145,13 @@ public class GameController : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    public void End(int nextlevel, int getStarCount)
+    public void End(int nextlevel, float time, int hitCount, int getStarCount)
     {
         _nextLevel = nextlevel;
         Tsunami.Instance.StopMove();
         _windowHUD.SetActive(false);
         _windowNext.SetActive(true);
-        _windowNext.GetComponent<WindowNext>().ShowStar(_allStarCount, getStarCount);
+        _windowNext.GetComponent<WindowNext>().Show(time, hitCount, _allStarCount, getStarCount);
         _state = GameState.End;
     }
 
@@ -153,7 +160,7 @@ public class GameController : MonoBehaviour
         if (_nextLevel >= 0 && _nextLevel < SceneManager.sceneCountInBuildSettings)
         {
             _blackMask.DOFade(1, 0.15f).onComplete = () =>
-            {                
+            {
                 SceneManager.LoadScene(_nextLevel);
             };
         }
@@ -165,24 +172,9 @@ public class GameController : MonoBehaviour
 
     public void Reset()
     {
-        // _state = GameState.Gaming;
-        // _wndGameOver.Hide();
-        var myboat = FindObjectOfType<MyBoatController>();
-        myboat.ResetDistance();
-        myboat.RefillFuel();
-        myboat.ResetCrash();
-        myboat.Hit = 0;
-        // _windowHUD.SetActive(true);
-
-        _tsunami.StartMove(myboat);
-
-        // center to track.
-        var resetPos = myboat.transform.position;
-        resetPos.x = 0.0f;
-        myboat.transform.position = resetPos;
-        myboat.transform.rotation = Quaternion.identity;
-        myboat.GetComponent<Rigidbody>().velocity = Vector3.zero;
-        myboat.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        _state = GameState.Gaming;
+        _windowHUD.SetActive(false);
+        _windowTimer.SetActive(true);
     }
 
 }

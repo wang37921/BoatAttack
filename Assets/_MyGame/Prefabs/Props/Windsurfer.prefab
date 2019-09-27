@@ -106,6 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   renderers: []
+  enable: 0
 --- !u!1 &6681965988817668724
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,6 +213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   renderers: []
+  enable: 0
 --- !u!1 &6850433536616647877
 GameObject:
   m_ObjectHideFlags: 0
@@ -5037,6 +5039,7 @@ MonoBehaviour:
   renderers:
   - {fileID: 1207596261086234508}
   - {fileID: 2565000401822731700}
+  enable: 0
 --- !u!205 &2944181070329971238
 LODGroup:
   m_ObjectHideFlags: 0
@@ -5059,7 +5062,7 @@ LODGroup:
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 2565000401822731700}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!1 &6850728546379467261
 GameObject:
   m_ObjectHideFlags: 0
@@ -9927,4 +9930,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxForce: 0.7
   _minForce: 0.4
+  _boatMesh: {fileID: 3145196596437103033}
   _destroied: 0

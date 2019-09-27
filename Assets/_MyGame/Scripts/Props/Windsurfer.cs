@@ -8,6 +8,8 @@ public class Windsurfer : MonoBehaviour
     float _maxForce = 1.0f;
     [SerializeField]
     float _minForce = 0.3f;
+    [SerializeField]
+    BoatAttack.RandomHue _boatMesh;
 
     [ReadOnly]
     [SerializeField]
@@ -15,6 +17,7 @@ public class Windsurfer : MonoBehaviour
 
     float _force;
     Rigidbody _rb;
+
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +29,7 @@ public class Windsurfer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!_destroied)
+        if (!_destroied && _boatMesh.enable)
             _rb.AddForce(transform.forward * _force);
     }
 

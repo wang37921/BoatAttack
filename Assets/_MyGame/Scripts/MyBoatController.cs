@@ -16,6 +16,8 @@ public class MyBoatController : MonoBehaviour
     [HideInInspector]
     public int starCount = 0;
 
+    float _timer = 0;
+
     [SerializeField]
     int _HPExpend = 30;
 
@@ -30,7 +32,7 @@ public class MyBoatController : MonoBehaviour
     bool _crashed = false;
 
     [SerializeField]
-    Engine _engine = null; // the engine script
+    public Engine _engine = null; // the engine script
 
     [SerializeField]
     float _maxTurn = 0.4f;
@@ -94,6 +96,8 @@ public class MyBoatController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        _timer = Time.unscaledTime;
+
         if (GameController.Instance.IsGaming)
         {
             _leftSeconds -= Time.fixedDeltaTime;
@@ -164,8 +168,9 @@ public class MyBoatController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var levelEnd = other.GetComponent<LevelEnd>();
-        if (GameController.Instance.IsGaming && levelEnd)
-            GameController.Instance.End(levelEnd.NextLevel, starCount);
+        if (GameController.Instance.IsGaming && levelEnd && other.gameObject.layer == LayerMask.NameToLayer("End"))
+            GameController.Instance.End(levelEnd.NextLevel, _timer, Hit,starCount);
+
         else if (GameController.Instance.IsGaming && other.gameObject.layer == LayerMask.NameToLayer("Star"))
         {
             Destroy(other.gameObject);
@@ -183,17 +188,20 @@ public class MyBoatController : MonoBehaviour
         }
         else
         {
-            // GameController.Instance.Reset();
+            /*
+            GameController.Instance.Reset();
 
-            // transform.position = ResetPosition(transform.position);
-            // transform.rotation = Quaternion.identity;
-            // transform.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            // transform.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            // FindObjectOfType<Tsunami>().StartMove(this);
-
+            transform.position = ResetPosition(transform.position);
+            transform.rotation = Quaternion.identity;
+            transform.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            transform.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            FindObjectOfType<Tsunami>().StartMove(this);
+            */
             ResetByTime();
         }
     }
+
+    /*
     List<Vector3> _midPoints;
     public Vector3 ResetPosition(Vector3 position)
     {
@@ -274,7 +282,7 @@ public class MyBoatController : MonoBehaviour
         Gizmos.DrawSphere(resetPoint, 1);
     }
 #endif
-
+ */
     public void ResetByTime()
     {
         if (_moveDataQueue.Count > 1)
@@ -287,5 +295,7 @@ public class MyBoatController : MonoBehaviour
             _moveDataQueue.Clear();
         }
         FindObjectOfType<Tsunami>().StartMove(this);
+
+        GameController.Instance.Reset();
     }
 }
