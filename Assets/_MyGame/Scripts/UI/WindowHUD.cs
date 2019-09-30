@@ -16,12 +16,18 @@ public class WindowHUD : MonoBehaviour
     TMPro.TextMeshProUGUI _txtTsunami;
     [SerializeField]
     TMPro.TextMeshProUGUI _txtStar;
+    [SerializeField]
+    TMPro.TextMeshProUGUI _txtTime;
 
     [SerializeField]
     Image[] _drops;
 
     [SerializeField]
     Image _nowHP;
+    [SerializeField]
+    Image _nowProgress;
+    [SerializeField]
+    Button _pauseButton;
 
     [SerializeField]
     float _invalidDropAlpha = 0.5f;
@@ -39,6 +45,10 @@ public class WindowHUD : MonoBehaviour
     {
         _myBoat = FindObjectOfType<MyBoatController>();
         _tsunami = FindObjectOfType<Tsunami>();
+        _pauseButton.onClick.AddListener(() =>
+        {
+            GameController.Instance.Pause();
+        });
     }
 
     // Update is called once per frame
@@ -70,12 +80,13 @@ public class WindowHUD : MonoBehaviour
         _txtDistance.text = AppString.Distance(_myBoat.Distance);
         _txtHit.text = AppString.Hit(_myBoat.Hit);
         _txtStar.text = _myBoat.starCount.ToString();
+        _txtTime.text = AppString.GameTime(_myBoat.GameTime);
 
         var distance = Mathf.Abs(_tsunami.transform.position.z - _myBoat.transform.position.z);
         _txtTsunami.text = AppString.Distance(distance);
         _txtTsunami.color = Color.Lerp(Color.white, Color.red, 1.0f - distance / _tsunamiWarningDistance);
 
         _nowHP.fillAmount = (float)_myBoat.HP / _myBoat.maxHP;
-
+        _nowProgress.fillAmount = _myBoat.Progress;
     }
 }

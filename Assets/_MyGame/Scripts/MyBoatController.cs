@@ -52,11 +52,15 @@ public class MyBoatController : MonoBehaviour
 
 
     float _distance = 0.0f;
+    float _zEnd, _zStart, _zNow;
     Rigidbody _rigidbody;
 
     public float Distance => _distance;
     public int Hit { get; set; }
     public bool InWater => _engine.InWater;
+    public float Progress => Mathf.Clamp((_zNow - _zStart) / (_zEnd - _zStart), 0f, 1f);
+    public float GameTime { get => _timer; }
+
 
     public void ResetDistance()
     {
@@ -83,6 +87,9 @@ public class MyBoatController : MonoBehaviour
         _leftSeconds = _maxSeconds;
         _rigidbody = GetComponent<Rigidbody>();
         _originPoint = transform.position;
+        _zStart = transform.position.z;
+        _zEnd = FindObjectOfType<LevelEnd>().transform.position.z;
+
         HP = maxHP;
 
         for (int i = 0; i < 6; i++)
@@ -96,10 +103,12 @@ public class MyBoatController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        _timer = Time.unscaledTime;
 
         if (GameController.Instance.IsGaming)
         {
+            _timer += Time.fixedDeltaTime;
+            _zNow = transform.position.z;
+
             _leftSeconds -= Time.fixedDeltaTime;
             _leftSeconds = Mathf.Max(_leftSeconds, 0.0f);
             if (_leftSeconds != 0.0f)
@@ -117,18 +126,18 @@ public class MyBoatController : MonoBehaviour
             }
             else
                 OnFuelOver();
+
+            _moveDataQueue.Enqueue(new MoveData
+            {
+                position = transform.position,
+                rotate = transform.rotation,
+                velocity = _rigidbody.velocity,
+                angularVelocity = _rigidbody.angularVelocity
+            });
+            if (_moveDataQueue.Count > _backFixedUpdateCount)
+                _moveDataQueue.Dequeue();
+
         }
-
-        _moveDataQueue.Enqueue(new MoveData
-        {
-            position = transform.position,
-            rotate = transform.rotation,
-            velocity = _rigidbody.velocity,
-            angularVelocity = _rigidbody.angularVelocity
-        });
-        if (_moveDataQueue.Count > _backFixedUpdateCount)
-            _moveDataQueue.Dequeue();
-
     }
 
     public void AddFuel(float seconds)
@@ -157,6 +166,7 @@ public class MyBoatController : MonoBehaviour
     public float LeftFuelPercent { get { return _leftSeconds / _maxSeconds; } }
     public bool HasFuel => _leftSeconds != 0.0f;
 
+
     private void OnCollisionEnter(Collision collision)
     {
         if (GameController.Instance.IsGaming && collision.gameObject.layer == LayerMask.NameToLayer("TrackBlock"))
@@ -169,7 +179,7 @@ public class MyBoatController : MonoBehaviour
     {
         var levelEnd = other.GetComponent<LevelEnd>();
         if (GameController.Instance.IsGaming && levelEnd && other.gameObject.layer == LayerMask.NameToLayer("End"))
-            GameController.Instance.End(levelEnd.NextLevel, _timer, Hit,starCount);
+            GameController.Instance.End(LevelEnd.Instance.NextLevel, _timer, Hit, starCount);
 
         else if (GameController.Instance.IsGaming && other.gameObject.layer == LayerMask.NameToLayer("Star"))
         {

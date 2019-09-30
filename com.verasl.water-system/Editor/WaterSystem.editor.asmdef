@@ -1,0 +1,17 @@
+{
+    "name": "WaterSystem.Editor",
+    "references": [
+        "WaterSystem",
+        "Unity.Burst.Editor"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

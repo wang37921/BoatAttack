@@ -14959,6 +14959,11 @@ MonoBehaviour:
     type: 3}
   _genDistance: 2.5
   _maxAge: 5
+  _waters:
+  - {fileID: 2475787684724668069}
+  - {fileID: 2460358180992385027}
+  - {fileID: 2460759521819185019}
+  - {fileID: 2460917988346836575}
 --- !u!1 &2369620124443957891
 GameObject:
   m_ObjectHideFlags: 0

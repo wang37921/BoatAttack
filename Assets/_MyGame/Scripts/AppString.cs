@@ -13,4 +13,8 @@ public static class AppString
     {
         return string.Format("{0}hit", hit);
     }
+    public static string GameTime(float time)
+    {
+        return string.Format("{0:0.0}s", time);
+    }
 }

@@ -8,17 +8,25 @@ using DG.Tweening;
 public class WindowNext : MonoBehaviour
 {
     [SerializeField]
-    TextMeshProUGUI _txtStar;
-
+    TextMeshProUGUI _txtTime;
     [SerializeField]
-    CanvasGroup[] _performances = new CanvasGroup[3];
+    TextMeshProUGUI _txtStar;
+    [SerializeField]
+    TextMeshProUGUI _txtHit;
 
     [SerializeField]
     Image _cupTime;
     [SerializeField]
-    
+    Image _cupStar;
+    [SerializeField]
+    Image _cupHit;
 
-    private void OnEnable() {
+    [SerializeField]
+    CanvasGroup[] _performances = new CanvasGroup[3];
+
+
+    private void OnEnable()
+    {
         foreach (var item in _performances)
         {
             item.alpha = 0;
@@ -28,7 +36,27 @@ public class WindowNext : MonoBehaviour
     public void Show(float time, int hitCount, int allStarCount, int getStarCount)
     {
         //显示结果
-        _txtStar.text = getStarCount + "/" + allStarCount;
+        // time
+        if (time <= LevelEnd.Instance.time)
+            _txtTime.text = time.ToString("0.0") + "/" + LevelEnd.Instance.time.ToString("0.0") + "S";
+        else
+            _txtTime.text = "<color=#dbdbdb>" + time.ToString("0.0") + "</color>/" + LevelEnd.Instance.time.ToString("0.0") + "S";
+        _cupTime.gameObject.SetActive(time <= LevelEnd.Instance.time ? true : false);
+
+        // star
+        int needStar = (int)(allStarCount * LevelEnd.Instance.star);
+        if (getStarCount >= needStar)
+            _txtStar.text = getStarCount + "/" + needStar;
+        else
+            _txtStar.text = "<color=#dbdbdb>" + getStarCount + "</color>/" + needStar;
+        _cupStar.gameObject.SetActive(getStarCount >= needStar ? true : false);
+
+        // hit
+        if (hitCount >= LevelEnd.Instance.hit)
+            _txtHit.text = hitCount + "/" + LevelEnd.Instance.hit;
+        else
+            _txtHit.text = "<color=#dbdbdb>" + hitCount + "</color>/" + LevelEnd.Instance.hit;
+        _cupHit.gameObject.SetActive(hitCount >= LevelEnd.Instance.hit ? true : false);
 
         //保存数据
     }

@@ -32,7 +32,7 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
-        _blackMask.DOFade(0, 0.3f);
+        _blackMask.DOFade(0, _blackMaskAnimation + 0.5f).SetEase(Ease.Linear);
         _allStarCount = GameObject.FindGameObjectsWithTag("star").Length;
     }
 
@@ -51,7 +51,12 @@ public class GameController : MonoBehaviour
     [SerializeField]
     GameObject _windowNext;
     [SerializeField]
+    GameObject _windowPause;
+    [SerializeField]
     RawImage _blackMask;
+
+    float _blackMaskAnimation = 0.4f;
+
     [SerializeField]
     Tsunami _tsunami;
     int _allStarCount = 0;
@@ -88,11 +93,12 @@ public class GameController : MonoBehaviour
     public bool HasBestHit => PlayerPrefs.HasKey(_kBestHit);
 
     public bool IsGaming => _state == GameState.Gaming;
+    public bool IsPausing => _state == GameState.Pause;
 
 
     public void StartGame()
     {
-        _vcamGaming.gameObject.SetActive(true);
+        // _vcamGaming.gameObject.SetActive(true);
         _windowTimer.SetActive(false);
         _StartGame();
     }
@@ -105,19 +111,43 @@ public class GameController : MonoBehaviour
         _tsunami.StartMove(myboat);
     }
 
+    public void LoadGame(int sceneID)
+    {
+        _blackMask.DOFade(1, _blackMaskAnimation).SetEase(Ease.Linear).onComplete = () =>
+        {
+            SceneManager.LoadScene(sceneID);
+        };
+    }
+
     public void ResetGame()
     {
         _vcamGaming.gameObject.SetActive(true);
         _windowTimer.SetActive(false);
         _state = GameState.Gaming;
         _windowHUD.SetActive(true);
+    }
 
+    public void ContinueGame()
+    {
+        _windowTimer.SetActive(false);
+        _windowHUD.SetActive(true);
     }
 
     public void Pause()
     {
+        if (Time.timeScale != 1)
+            return;
         Time.timeScale = 0.0f;
         _state = GameState.Pause;
+        _windowHUD.SetActive(false);
+        _windowPause.SetActive(true);
+    }
+
+    public void Continue()
+    {
+        _windowPause.SetActive(false);
+        _windowTimer.SetActive(true);
+        _state = GameState.Gaming;
     }
 
     public void GameOver(float distance, int hit)
@@ -159,15 +189,19 @@ public class GameController : MonoBehaviour
     {
         if (_nextLevel >= 0 && _nextLevel < SceneManager.sceneCountInBuildSettings)
         {
-            _blackMask.DOFade(1, 0.15f).onComplete = () =>
-            {
-                SceneManager.LoadScene(_nextLevel);
-            };
+            LoadGame(_nextLevel);
+        }
+        else if (_nextLevel < 0 && (SceneManager.GetActiveScene().buildIndex + 1) < SceneManager.sceneCountInBuildSettings)
+        {
+            LoadGame(SceneManager.GetActiveScene().buildIndex + 1);
         }
         else
         {
+            //? 返回主菜单
             Debug.LogWarning("All Pass!");
+            LoadGame(0);
         }
+
     }
 
     public void Reset()
@@ -176,5 +210,4 @@ public class GameController : MonoBehaviour
         _windowHUD.SetActive(false);
         _windowTimer.SetActive(true);
     }
-
 }

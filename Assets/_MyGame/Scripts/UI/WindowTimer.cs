@@ -21,7 +21,7 @@ public class WindowTimer : MonoBehaviour
         _timer = Time.unscaledTime;
 
         Time.timeScale = _timeScale;
-        DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1, _startTime / 3).SetEase(Ease.InExpo);
+        DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1, _startTime).SetEase(Ease.InExpo);
     }
 
     private void Update()
@@ -29,13 +29,17 @@ public class WindowTimer : MonoBehaviour
         _title.text = Mathf.Ceil(_startTime - (Time.unscaledTime - _timer)).ToString();
         if (Time.unscaledTime - _timer > _startTime)
         {
-            if (!GameController.Instance.IsGaming)
+            if (GameController.Instance.IsGaming)
             {
-                _gameController.StartGame();
+                _gameController.ResetGame();
+            }
+            else if (GameController.Instance.IsPausing)
+            {
+                _gameController.ContinueGame();
             }
             else
             {
-                _gameController.ResetGame();
+                _gameController.StartGame();
             }
         }
     }

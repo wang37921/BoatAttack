@@ -1182,7 +1182,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Survive
+  m_text: Survived
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f429885f83b224f479a176151a65c0c9, type: 2}
   m_sharedMaterial: {fileID: 21996775917937320, guid: f429885f83b224f479a176151a65c0c9,
@@ -1252,7 +1252,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 3435456028190396809}
-    characterCount: 7
+    characterCount: 8
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -1326,7 +1326,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4004128a0f6214c479e062e6b028bde7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _txtTime: {fileID: 996305044798654018}
   _txtStar: {fileID: 1222439248922277725}
+  _txtHit: {fileID: 1285936769350635915}
+  _cupTime: {fileID: 7772002357373818374}
+  _cupStar: {fileID: 6906984751175016105}
+  _cupHit: {fileID: 3952020361511018777}
   _performances:
   - {fileID: 440797051330616644}
   - {fileID: 6488189911894882425}

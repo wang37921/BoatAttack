@@ -5,8 +5,8 @@
     "unity": "2019.1",
     "displayName": "LWRP Water System",
     "dependencies": {
-        "com.unity.mathematics": "0.0.12-preview.11",
-        "com.unity.burst": "0.2.4-preview.30",
+        "com.unity.mathematics": "1.1.0",
+        "com.unity.burst": "1.1.2",
         "com.unity.render-pipelines.lightweight": "5.2.1"
     }
 }

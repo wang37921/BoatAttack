@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1648a734562dfe44a8b3f03c0eee8da5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NextLevel: 1
+  NextLevel: -1
   time: 30
   hit: 1
   star: 0.7
