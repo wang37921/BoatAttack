@@ -8,6 +8,8 @@ public class WindowPause : MonoBehaviour
     [SerializeField]
     Button _continueButton;
     [SerializeField]
+    Button _restartButton;
+    [SerializeField]
     Button _exitButton;
 
     private void Start()
@@ -17,9 +19,14 @@ public class WindowPause : MonoBehaviour
             GameController.Instance.Continue();
         });
 
+        _restartButton.onClick.AddListener(() =>
+        {
+            GameController.Instance.Restart();
+        });
+
         _exitButton.onClick.AddListener(() =>
         {
-            GameController.Instance.LoadGame(0);
+            GameController.Instance.LoadGameStart(0);
         });
     }
 }

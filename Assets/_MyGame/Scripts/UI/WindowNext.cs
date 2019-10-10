@@ -37,14 +37,14 @@ public class WindowNext : MonoBehaviour
     {
         //显示结果
         // time
-        if (time <= LevelEnd.Instance.time)
-            _txtTime.text = time.ToString("0.0") + "/" + LevelEnd.Instance.time.ToString("0.0") + "S";
+        if (time <= PlayerModel.Instance.CurrentLevelData.Time)
+            _txtTime.text = time.ToString("0.0") + "/" + PlayerModel.Instance.CurrentLevelData.Time.ToString("0.0") + "S";
         else
-            _txtTime.text = "<color=#dbdbdb>" + time.ToString("0.0") + "</color>/" + LevelEnd.Instance.time.ToString("0.0") + "S";
-        _cupTime.gameObject.SetActive(time <= LevelEnd.Instance.time ? true : false);
+            _txtTime.text = "<color=#dbdbdb>" + time.ToString("0.0") + "</color>/" + PlayerModel.Instance.CurrentLevelData.Time.ToString("0.0") + "S";
+        _cupTime.gameObject.SetActive(time <= PlayerModel.Instance.CurrentLevelData.Time ? true : false);
 
         // star
-        int needStar = (int)(allStarCount * LevelEnd.Instance.star);
+        int needStar = (int)(allStarCount * PlayerModel.Instance.CurrentLevelData.Star);
         if (getStarCount >= needStar)
             _txtStar.text = getStarCount + "/" + needStar;
         else
@@ -52,13 +52,16 @@ public class WindowNext : MonoBehaviour
         _cupStar.gameObject.SetActive(getStarCount >= needStar ? true : false);
 
         // hit
-        if (hitCount >= LevelEnd.Instance.hit)
-            _txtHit.text = hitCount + "/" + LevelEnd.Instance.hit;
+        if (hitCount >= PlayerModel.Instance.CurrentLevelData.Hit)
+            _txtHit.text = hitCount + "/" + PlayerModel.Instance.CurrentLevelData.Hit;
         else
-            _txtHit.text = "<color=#dbdbdb>" + hitCount + "</color>/" + LevelEnd.Instance.hit;
-        _cupHit.gameObject.SetActive(hitCount >= LevelEnd.Instance.hit ? true : false);
+            _txtHit.text = "<color=#dbdbdb>" + hitCount + "</color>/" + PlayerModel.Instance.CurrentLevelData.Hit;
+        _cupHit.gameObject.SetActive(hitCount >= PlayerModel.Instance.CurrentLevelData.Hit ? true : false);
 
         //保存数据
+        PlayerModel.Instance.currentLevel.cupTime = PlayerModel.Instance.currentLevel.cupTime || time <= PlayerModel.Instance.CurrentLevelData.Time;
+        PlayerModel.Instance.currentLevel.cupStar = PlayerModel.Instance.currentLevel.cupStar || getStarCount >= needStar;
+        PlayerModel.Instance.currentLevel.cupHit = PlayerModel.Instance.currentLevel.cupHit || hitCount >= PlayerModel.Instance.CurrentLevelData.Hit;
     }
 
     //UI动画

@@ -18,28 +18,46 @@ public class Tsunami : MonoBehaviour
     }
 
     [SerializeField]
-    float _speed = 1.3f;
+    float _speed = 12f;
     [SerializeField]
     float _tsunamiInitDistance = 30.0f;
+    [Header("起点到终点间的速度")]
+    public AnimationCurve _speedCurve = new AnimationCurve(new Keyframe[] { new Keyframe(0, 1), new Keyframe(1, 1) });
+    [SerializeField]
+    float _moveSpeedLerp = 0.07f;
+    MyBoatController _myboat;
+
+    bool _needMove = false;
 
     Rigidbody _rigidbody;
     // Start is called before the first frame update
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _myboat = FindObjectOfType<MyBoatController>();
     }
 
-    public void StartMove(MyBoatController myboat)
+    private void FixedUpdate()
     {
-        var boatPos = myboat.transform.position;
+        _rigidbody.velocity = Vector3.Lerp(_rigidbody.velocity,
+        _needMove ?
+        Vector3.forward * _speed * _speedCurve.Evaluate(_myboat.Progress)
+        : Vector3.zero
+        , _moveSpeedLerp);
+
+    }
+
+    public void StartMove()
+    {
+        var boatPos = _myboat.transform.position;
         boatPos.x = 0;
         transform.position = boatPos + Vector3.back * _tsunamiInitDistance;
-        _rigidbody.velocity = Vector3.forward * _speed;
+        _needMove = true;
     }
 
     public void StopMove()
     {
-        _rigidbody.velocity = Vector3.zero;
+        _needMove = false;
     }
 
     private void OnTriggerEnter(Collider other)

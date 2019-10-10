@@ -21,9 +21,13 @@ public class LookAtMainCamera : MonoBehaviour
     Quaternion _rotation;
     bool _enable = false;
 
-    private void Start()
+    private void Awake()
     {
         _cameraPoint = Camera.main.transform;
+
+        LookAt(_cameraPoint);
+
+        transform.Rotate(_offset, Space.Self);
     }
     void FixedUpdate()
     {

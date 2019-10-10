@@ -14,13 +14,14 @@ public class WindowGameOver : MonoBehaviour
     public void Show(float? newrecord = null, int? newHit = null)
     {
         gameObject.SetActive(true);
-        _groupNewRecord.SetActive(newrecord != null || newHit != null);
-        _txtNewRecord.gameObject.SetActive(newrecord != null);
-        if (newrecord != null)
-            _txtNewRecord.text = string.Format("new dist: {0}", AppString.Distance(newrecord.Value));
-        _txtNewHit.gameObject.SetActive(newHit != null);
-        if (newHit != null)
-            _txtNewHit.text = string.Format("new hit: {0}", AppString.Hit(newHit.Value));
+
+        // _groupNewRecord.SetActive(newrecord != null || newHit != null);
+        // _txtNewRecord.gameObject.SetActive(newrecord != null);
+        // if (newrecord != null)
+        //     _txtNewRecord.text = string.Format("new dist: {0}", AppString.Distance(newrecord.Value));
+        // _txtNewHit.gameObject.SetActive(newHit != null);
+        // if (newHit != null)
+        //     _txtNewHit.text = string.Format("new hit: {0}", AppString.Hit(newHit.Value));
     }
 
     public void Hide()

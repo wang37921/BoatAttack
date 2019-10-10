@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 using LitJson;
 
+[SerializeField]
 public class PlayerData
 {
-    public int ID;
-    public int group;
+    public int map;
+    public int index;
     public bool cupTime;
     public bool cupStar;
     public bool cupHit;
@@ -14,8 +17,8 @@ public class PlayerData
 
 public class PlayerModel
 {
-    List<PlayerData> _playerData;
-    public List<PlayerData> playerDatas
+    Dictionary<string, PlayerData> _playerData;
+    public Dictionary<string, PlayerData> playerDatas
     {
         get
         {
@@ -45,30 +48,87 @@ public class PlayerModel
     }
     PlayerModel() { }
 
-    public List<PlayerData> ReadPlayerData()
+    public UnityAction onInitDone;
+    public LevelDatas levelDatas;
+    public PlayerData currentLevel;
+    public LevelData CurrentLevelData
+    {
+        get
+        {
+            return levelDatas.levels[currentLevel.index];
+        }
+    }
+
+    public PlayerModel Init()
+    {
+        Addressables.LoadAssetAsync<LevelDatas>("Level Datas").Completed += handle =>
+        {
+            levelDatas = handle.Result;
+            onInitDone();
+        };
+        return this;
+    }
+
+    public Dictionary<string, PlayerData> ReadPlayerData()
     {
         var str = PlayerPrefs.GetString("PlayerData");
-        List<PlayerData> data = null;
-        if (str != null)
+        Dictionary<string, PlayerData> data = null;
+        if (string.IsNullOrEmpty(str))
         {
-            data = JsonMapper.ToObject<List<PlayerData>>(str);
+            data = new Dictionary<string, PlayerData>();
+            data["0"] = new PlayerData { index = 0, map = 0, cupTime = false, cupStar = false, cupHit = false };
         }
         else
         {
-            data = new List<PlayerData>();
-            data.Add(new PlayerData { ID = 1, group = 0, cupTime = false, cupStar = false, cupHit = false });
+            data = JsonMapper.ToObject<Dictionary<string, PlayerData>>(str);
         }
         return data;
     }
 
-    public void SavePlayerData()
+    // 保存当前关卡并返回下一个关卡
+    public PlayerData SavePlayerData()
     {
-        var str = JsonMapper.ToJson(_playerData);
+        PlayerData nextLevelData = null;
+        if (currentLevel != null)
+        {
+            playerDatas[currentLevel.index.ToString()] = currentLevel;
+
+            // 添加下一关 : 任意奖杯 仍有关卡
+            if ((currentLevel.cupHit || currentLevel.cupStar || currentLevel.cupTime) && currentLevel.index + 1 < levelDatas.levels.Count)
+            {
+                // 若有记录则加载，无则新建
+                if (playerDatas.ContainsKey((currentLevel.index + 1).ToString()))
+                {
+                    nextLevelData = playerDatas[(currentLevel.index + 1).ToString()];
+                }
+                else
+                {
+                    nextLevelData = new PlayerData { index = currentLevel.index + 1, map = 0, cupTime = false, cupStar = false, cupHit = false };
+                    playerDatas[nextLevelData.index.ToString()] = nextLevelData;
+                }
+            }
+        }
+
+        var str = JsonMapper.ToJson(playerDatas);
         PlayerPrefs.SetString("PlayerData", str);
+
+#if UNITY_EDITOR
+        Debug.Log(str);
+#endif
+        return nextLevelData;
     }
 
-    public void AddNewLevelData(int nextLevelID)
+
+
+
+    public void AddNewLevelData(int nextLevelID, int _map, bool _cupTime, bool _cupStar, bool _cupHit)
     {
-        _playerData.Add(new PlayerData { ID = nextLevelID, group = 0, cupTime = false, cupStar = false, cupHit = false });
+        playerDatas[nextLevelID.ToString()] = new PlayerData { index = nextLevelID, map = _map, cupTime = _cupTime, cupStar = _cupStar, cupHit = _cupHit };
+
+        // if (WindowLevel.levelsData.Levels.Count > int.Parse(nextLevelID) && (_cupHit || _cupStar || _cupTime))
+        // {
+        //     playerDatas[(int.Parse(nextLevelID) + 1).ToString()] = new PlayerData { ID = nextLevelID, group = _group, cupTime = false, cupStar = false, cupHit = false };
+        // }
+
     }
 }

@@ -55,6 +55,8 @@ public class MyBoatController : MonoBehaviour
     float _zEnd, _zStart, _zNow;
     Rigidbody _rigidbody;
 
+    public float accTimer = 0;
+
     public float Distance => _distance;
     public int Hit { get; set; }
     public bool InWater => _engine.InWater;
@@ -74,6 +76,7 @@ public class MyBoatController : MonoBehaviour
 
     struct MoveData
     {
+        public float accTimer;
         public Vector3 position;
         public Quaternion rotate;
         public Vector3 velocity;
@@ -88,7 +91,7 @@ public class MyBoatController : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _originPoint = transform.position;
         _zStart = transform.position.z;
-        _zEnd = FindObjectOfType<LevelEnd>().transform.position.z;
+        _zEnd = GameObject.Find("/End").transform.position.z;
 
         HP = maxHP;
 
@@ -108,6 +111,7 @@ public class MyBoatController : MonoBehaviour
         {
             _timer += Time.fixedDeltaTime;
             _zNow = transform.position.z;
+            accTimer -= Time.fixedDeltaTime;
 
             _leftSeconds -= Time.fixedDeltaTime;
             _leftSeconds = Mathf.Max(_leftSeconds, 0.0f);
@@ -129,6 +133,7 @@ public class MyBoatController : MonoBehaviour
 
             _moveDataQueue.Enqueue(new MoveData
             {
+                accTimer = this.accTimer,
                 position = transform.position,
                 rotate = transform.rotation,
                 velocity = _rigidbody.velocity,
@@ -177,9 +182,8 @@ public class MyBoatController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        var levelEnd = other.GetComponent<LevelEnd>();
-        if (GameController.Instance.IsGaming && levelEnd && other.gameObject.layer == LayerMask.NameToLayer("End"))
-            GameController.Instance.End(LevelEnd.Instance.NextLevel, _timer, Hit, starCount);
+        if (GameController.Instance.IsGaming && other.gameObject.layer == LayerMask.NameToLayer("End"))
+            GameController.Instance.End(_timer, Hit, starCount);
 
         else if (GameController.Instance.IsGaming && other.gameObject.layer == LayerMask.NameToLayer("Star"))
         {
@@ -298,13 +302,14 @@ public class MyBoatController : MonoBehaviour
         if (_moveDataQueue.Count > 1)
         {
             var moveData = _moveDataQueue.Dequeue();
+            accTimer = moveData.accTimer;
             transform.position = moveData.position;
             transform.rotation = moveData.rotate;
             _rigidbody.velocity = moveData.velocity;
             _rigidbody.angularVelocity = moveData.angularVelocity;
             _moveDataQueue.Clear();
         }
-        FindObjectOfType<Tsunami>().StartMove(this);
+        FindObjectOfType<Tsunami>().StartMove();
 
         GameController.Instance.Reset();
     }

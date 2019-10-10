@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.AddressableAssets;
 
 public enum GameState
 {
@@ -62,8 +63,6 @@ public class GameController : MonoBehaviour
     int _allStarCount = 0;
 
 
-    int _nextLevel;
-
     public const string _kBestRecord = "bestrecord";
     public float BestDistance
     {
@@ -108,14 +107,22 @@ public class GameController : MonoBehaviour
         _state = GameState.Gaming;
         _windowHUD.SetActive(true);
         var myboat = FindObjectOfType<MyBoatController>();
-        _tsunami.StartMove(myboat);
+        _tsunami.StartMove();
     }
 
-    public void LoadGame(int sceneID)
+    public void LoadGameStart(int sceneID = 0)
     {
         _blackMask.DOFade(1, _blackMaskAnimation).SetEase(Ease.Linear).onComplete = () =>
         {
             SceneManager.LoadScene(sceneID);
+        };
+    }
+    public void LoadGameAddressable(PlayerData data)
+    {
+        _blackMask.DOFade(1, _blackMaskAnimation).SetEase(Ease.Linear).onComplete = () =>
+        {
+            PlayerModel.Instance.currentLevel = data;
+            Addressables.LoadSceneAsync("Gaming " + data.index);
         };
     }
 
@@ -172,12 +179,11 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        LoadGameAddressable(PlayerModel.Instance.currentLevel);
     }
 
-    public void End(int nextlevel, float time, int hitCount, int getStarCount)
+    public void End(float time, int hitCount, int getStarCount)
     {
-        _nextLevel = nextlevel;
         Tsunami.Instance.StopMove();
         _windowHUD.SetActive(false);
         _windowNext.SetActive(true);
@@ -187,19 +193,16 @@ public class GameController : MonoBehaviour
 
     public void Next()
     {
-        if (_nextLevel >= 0 && _nextLevel < SceneManager.sceneCountInBuildSettings)
+        var nextLevel = PlayerModel.Instance.SavePlayerData();
+        if (nextLevel != null)
         {
-            LoadGame(_nextLevel);
-        }
-        else if (_nextLevel < 0 && (SceneManager.GetActiveScene().buildIndex + 1) < SceneManager.sceneCountInBuildSettings)
-        {
-            LoadGame(SceneManager.GetActiveScene().buildIndex + 1);
+            LoadGameAddressable(nextLevel);
         }
         else
         {
             //? 返回主菜单
             Debug.LogWarning("All Pass!");
-            LoadGame(0);
+            LoadGameStart(0);
         }
 
     }
@@ -209,5 +212,11 @@ public class GameController : MonoBehaviour
         _state = GameState.Gaming;
         _windowHUD.SetActive(false);
         _windowTimer.SetActive(true);
+    }
+
+    public void ChooseLevel()
+    {
+        FindObjectOfType<WindowStart>().gameObject.SetActive(false);
+        FindObjectOfType<WindowLevel>().gameObject.SetActive(true);
     }
 }
