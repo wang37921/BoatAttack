@@ -31,8 +31,8 @@ public class LookAtMainCamera : MonoBehaviour
     }
     void FixedUpdate()
     {
-        // if (!_enable)
-        //     return;
+        if (!_enable)
+            return;
 
         LookAt(_cameraPoint);
 

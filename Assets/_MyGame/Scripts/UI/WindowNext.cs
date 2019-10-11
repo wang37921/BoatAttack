@@ -20,6 +20,8 @@ public class WindowNext : MonoBehaviour
     Image _cupStar;
     [SerializeField]
     Image _cupHit;
+    [SerializeField]
+    Button _exitButton;
 
     [SerializeField]
     CanvasGroup[] _performances = new CanvasGroup[3];
@@ -31,6 +33,14 @@ public class WindowNext : MonoBehaviour
         {
             item.alpha = 0;
         }
+    }
+
+    private void Start() {
+        _exitButton.onClick.AddListener(() =>
+    {
+    GameController.Instance.LoadGameStart(0);
+});
+
     }
 
     public void Show(float time, int hitCount, int allStarCount, int getStarCount)

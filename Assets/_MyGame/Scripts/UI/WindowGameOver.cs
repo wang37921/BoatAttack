@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WindowGameOver : MonoBehaviour
 {
@@ -10,6 +11,17 @@ public class WindowGameOver : MonoBehaviour
     TMPro.TextMeshProUGUI _txtNewRecord;
     [SerializeField]
     TMPro.TextMeshProUGUI _txtNewHit;
+    [SerializeField]
+    Button _exitButton;
+
+    private void Start()
+    {
+        _exitButton.onClick.AddListener(() =>
+        {
+            GameController.Instance.LoadGameStart(0);
+        });
+
+    }
 
     public void Show(float? newrecord = null, int? newHit = null)
     {

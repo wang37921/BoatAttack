@@ -5,8 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class HideMesh : MonoBehaviour
 {
-    private void Start()
+    private void Awake()
     {
-        GetComponent<MeshRenderer>().enabled = false;
+        // GetComponent<MeshRenderer>().material.SetColor("_BaseColor", new Color(0, 0, 0, 0));
+        GetComponent<MeshRenderer>().material.color = new Color(0, 0, 0, 0);
     }
 }
