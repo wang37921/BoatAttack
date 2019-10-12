@@ -14657,6 +14657,7 @@ MonoBehaviour:
   volume: 5.8590007
   voxelResolution: 0.3
   centerOfMass: {x: 0, y: -0.25, z: -0.55}
+  WATER_DENSITY: 1000
   voxels:
   - {x: -0.9000001, y: 0.12409994, z: -1.7381939}
   - {x: -0.9000001, y: 0.12409994, z: -1.4381939}
@@ -14904,6 +14905,7 @@ MonoBehaviour:
   _showMore: 0
   _lineLength: 50
   _backFixedUpdateCount: 180
+  accTimer: 0
 --- !u!1 &2369374578706222769
 GameObject:
   m_ObjectHideFlags: 0

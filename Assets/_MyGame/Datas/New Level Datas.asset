@@ -53,7 +53,7 @@ MonoBehaviour:
       Data: 2
     - Name: Star
       Entry: 4
-      Data: 0.7
+      Data: 0.71
     - Name: 
       Entry: 8
       Data: 
@@ -62,7 +62,7 @@ MonoBehaviour:
       Data: 3|LevelData, Assembly-CSharp
     - Name: Time
       Entry: 3
-      Data: 30
+      Data: 29
     - Name: Hit
       Entry: 3
       Data: 2

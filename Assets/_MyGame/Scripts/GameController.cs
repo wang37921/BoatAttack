@@ -61,6 +61,9 @@ public class GameController : MonoBehaviour
     [SerializeField]
     Tsunami _tsunami;
     int _allStarCount = 0;
+    
+    [SerializeField]
+    string _levelNamePrefix = "Gaming ";
 
 
     public const string _kBestRecord = "bestrecord";
@@ -122,7 +125,8 @@ public class GameController : MonoBehaviour
         _blackMask.DOFade(1, _blackMaskAnimation).SetEase(Ease.Linear).onComplete = () =>
         {
             PlayerModel.Instance.currentLevel = data;
-            Addressables.LoadSceneAsync("Gaming " + data.index);
+
+            Addressables.LoadSceneAsync(_levelNamePrefix + (data == null ? 0 : data.index));
         };
     }
 

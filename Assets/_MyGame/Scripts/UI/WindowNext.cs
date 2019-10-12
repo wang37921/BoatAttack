@@ -35,17 +35,23 @@ public class WindowNext : MonoBehaviour
         }
     }
 
-    private void Start() {
+    private void Start()
+    {
         _exitButton.onClick.AddListener(() =>
     {
-    GameController.Instance.LoadGameStart(0);
-});
+        GameController.Instance.LoadGameStart(0);
+    });
 
     }
 
     public void Show(float time, int hitCount, int allStarCount, int getStarCount)
     {
         //显示结果
+        if (PlayerModel.Instance.CurrentLevelData == null)
+        {
+            Debug.LogWarning("无关卡数据！需从Start关卡运行");
+            return;
+        }
         // time
         if (time <= PlayerModel.Instance.CurrentLevelData.Time)
             _txtTime.text = time.ToString("0.0") + "/" + PlayerModel.Instance.CurrentLevelData.Time.ToString("0.0") + "S";

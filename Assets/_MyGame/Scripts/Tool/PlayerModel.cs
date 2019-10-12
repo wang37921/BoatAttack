@@ -55,6 +55,8 @@ public class PlayerModel
     {
         get
         {
+            if(currentLevel == null)
+                return null;
             return levelDatas.levels[currentLevel.index];
         }
     }
