@@ -26,7 +26,7 @@ MonoBehaviour:
       Data: 0|System.Collections.Generic.List`1[[LevelData, Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
-      Data: 3
+      Data: 7
     - Name: 
       Entry: 7
       Data: 1|LevelData, Assembly-CSharp
@@ -35,10 +35,10 @@ MonoBehaviour:
       Data: 30
     - Name: Hit
       Entry: 3
-      Data: 2
+      Data: 1
     - Name: Star
       Entry: 4
-      Data: 0.7
+      Data: 0.728
     - Name: 
       Entry: 8
       Data: 
@@ -63,6 +63,66 @@ MonoBehaviour:
     - Name: Time
       Entry: 3
       Data: 29
+    - Name: Hit
+      Entry: 3
+      Data: 2
+    - Name: Star
+      Entry: 4
+      Data: 0.7
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 4|LevelData, Assembly-CSharp
+    - Name: Time
+      Entry: 3
+      Data: 30
+    - Name: Hit
+      Entry: 3
+      Data: 0
+    - Name: Star
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 5|LevelData, Assembly-CSharp
+    - Name: Time
+      Entry: 3
+      Data: 30
+    - Name: Hit
+      Entry: 3
+      Data: 0
+    - Name: Star
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 6|LevelData, Assembly-CSharp
+    - Name: Time
+      Entry: 3
+      Data: 30
+    - Name: Hit
+      Entry: 3
+      Data: 0
+    - Name: Star
+      Entry: 4
+      Data: 0.7
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 7|LevelData, Assembly-CSharp
+    - Name: Time
+      Entry: 3
+      Data: 30
     - Name: Hit
       Entry: 3
       Data: 2

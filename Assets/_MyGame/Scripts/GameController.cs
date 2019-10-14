@@ -63,7 +63,7 @@ public class GameController : MonoBehaviour
     int _allStarCount = 0;
     
     [SerializeField]
-    string _levelNamePrefix = "Gaming ";
+    string _levelNamePrefix = "Level";
 
 
     public const string _kBestRecord = "bestrecord";

@@ -9928,7 +9928,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfe6cb928a6bb194ca827b008cdb6e6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxForce: 0.7
-  _minForce: 0.4
+  _maxForce: 1
+  _minForce: 0.5
   _boatMesh: {fileID: 3145196596437103033}
   _destroied: 0

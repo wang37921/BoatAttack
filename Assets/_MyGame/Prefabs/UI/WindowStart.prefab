@@ -136,7 +136,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Keep Sailing
+  m_text: Escaping Yacht
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f429885f83b224f479a176151a65c0c9, type: 2}
   m_sharedMaterial: {fileID: 21996775917937320, guid: f429885f83b224f479a176151a65c0c9,
@@ -206,7 +206,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 2662413494189522123}
-    characterCount: 12
+    characterCount: 14
     spriteCount: 0
     spaceCount: 1
     wordCount: 2

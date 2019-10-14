@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
   m_LightingDataAsset: {fileID: 112000000, guid: 760307145e5bc7f45b88b63445ef0067,
     type: 2}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -506,6 +506,7 @@ MonoBehaviour:
   _windowPause: {fileID: 0}
   _blackMask: {fileID: 357792528}
   _tsunami: {fileID: 0}
+  _levelNamePrefix: Level
 --- !u!1 &1361220846
 GameObject:
   m_ObjectHideFlags: 0
@@ -759,7 +760,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1423897355}
-  m_LocalRotation: {x: 0.09230755, y: 0.3725235, z: -0.037268795, w: 0.9226682}
+  m_LocalRotation: {x: 0.09230757, y: 0.37252352, z: -0.037268806, w: 0.9226682}
   m_LocalPosition: {x: -8.76, y: 2.77, z: -10.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1144,7 +1145,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1872587673}
-  m_LocalRotation: {x: 0.09230755, y: 0.3725235, z: -0.037268795, w: 0.9226682}
+  m_LocalRotation: {x: 0.09230757, y: 0.37252352, z: -0.037268806, w: 0.9226682}
   m_LocalPosition: {x: -8.76, y: 2.77, z: -10.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -1396,11 +1397,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: WindowStart
       objectReference: {fileID: 0}
-    - target: {fileID: 2662413496190002173, guid: 343c1aac1e6082e40ab5e6cd024ed1a9,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2662413496190002172, guid: 343c1aac1e6082e40ab5e6cd024ed1a9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1516,11 +1512,6 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 2662413494947053419, guid: 343c1aac1e6082e40ab5e6cd024ed1a9,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2662413494126877279, guid: 343c1aac1e6082e40ab5e6cd024ed1a9,
         type: 3}
       propertyPath: m_Material
@@ -1530,11 +1521,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2662413494126877279, guid: 343c1aac1e6082e40ab5e6cd024ed1a9,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2662413496190001667, guid: 343c1aac1e6082e40ab5e6cd024ed1a9,
         type: 3}

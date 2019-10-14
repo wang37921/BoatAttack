@@ -7,7 +7,7 @@ public class Windsurfer : MonoBehaviour
     [SerializeField]
     float _maxForce = 1.0f;
     [SerializeField]
-    float _minForce = 0.3f;
+    float _minForce = 0.5f;
     [SerializeField]
     BoatAttack.RandomHue _boatMesh;
 

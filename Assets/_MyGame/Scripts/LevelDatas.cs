@@ -23,6 +23,6 @@ public class LevelData
     [Range(0, 10)]
     public int Hit = 2;
 
-    [Range(0.1f, 1f)]
+    [Range(0f, 1f)]
     public float Star = 0.7f;
 }

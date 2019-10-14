@@ -47,37 +47,46 @@ public class WindowNext : MonoBehaviour
     public void Show(float time, int hitCount, int allStarCount, int getStarCount)
     {
         //显示结果
-        if (PlayerModel.Instance.CurrentLevelData == null)
+        var cLevelData = PlayerModel.Instance.CurrentLevelData;
+        if (cLevelData == null)
         {
             Debug.LogWarning("无关卡数据！需从Start关卡运行");
             return;
         }
         // time
-        if (time <= PlayerModel.Instance.CurrentLevelData.Time)
-            _txtTime.text = time.ToString("0.0") + "/" + PlayerModel.Instance.CurrentLevelData.Time.ToString("0.0") + "S";
+        if (time <= cLevelData.Time)
+            _txtTime.text = time.ToString("0.0") + "/" + cLevelData.Time.ToString("0.0") + "S";
         else
-            _txtTime.text = "<color=#dbdbdb>" + time.ToString("0.0") + "</color>/" + PlayerModel.Instance.CurrentLevelData.Time.ToString("0.0") + "S";
-        _cupTime.gameObject.SetActive(time <= PlayerModel.Instance.CurrentLevelData.Time ? true : false);
+            _txtTime.text = "<color=#dbdbdb>" + time.ToString("0.0") + "</color>/" + cLevelData.Time.ToString("0.0") + "S";
+        _cupTime.gameObject.SetActive(time <= cLevelData.Time ? true : false);
 
         // star
-        int needStar = (int)(allStarCount * PlayerModel.Instance.CurrentLevelData.Star);
-        if (getStarCount >= needStar)
+        int needStar = (int)(allStarCount * cLevelData.Star);
+        if (needStar == 0)
+            _txtStar.transform.parent.gameObject.SetActive(false);
+        else if (getStarCount >= needStar)
             _txtStar.text = getStarCount + "/" + needStar;
         else
             _txtStar.text = "<color=#dbdbdb>" + getStarCount + "</color>/" + needStar;
-        _cupStar.gameObject.SetActive(getStarCount >= needStar ? true : false);
+        _cupStar.gameObject.SetActive(getStarCount >= needStar || needStar == 0 ? true : false);
 
         // hit
-        if (hitCount >= PlayerModel.Instance.CurrentLevelData.Hit)
-            _txtHit.text = hitCount + "/" + PlayerModel.Instance.CurrentLevelData.Hit;
+        var needHit = cLevelData.Hit;
+        if (needHit == 0)
+            _txtHit.transform.parent.gameObject.SetActive(false);
+        else if (hitCount >= needHit)
+            _txtHit.text = hitCount + "/" + needHit;
         else
-            _txtHit.text = "<color=#dbdbdb>" + hitCount + "</color>/" + PlayerModel.Instance.CurrentLevelData.Hit;
-        _cupHit.gameObject.SetActive(hitCount >= PlayerModel.Instance.CurrentLevelData.Hit ? true : false);
+            _txtHit.text = "<color=#dbdbdb>" + hitCount + "</color>/" + needHit;
+        _cupHit.gameObject.SetActive(hitCount >= needHit || needHit == 0 ? true : false);
 
         //保存数据
-        PlayerModel.Instance.currentLevel.cupTime = PlayerModel.Instance.currentLevel.cupTime || time <= PlayerModel.Instance.CurrentLevelData.Time;
-        PlayerModel.Instance.currentLevel.cupStar = PlayerModel.Instance.currentLevel.cupStar || getStarCount >= needStar;
-        PlayerModel.Instance.currentLevel.cupHit = PlayerModel.Instance.currentLevel.cupHit || hitCount >= PlayerModel.Instance.CurrentLevelData.Hit;
+        var cLevel = PlayerModel.Instance.currentLevel;
+        cLevel.cupTime = cLevel.cupTime || time <= cLevelData.Time;
+        cLevel.cupStar = cLevel.cupStar || getStarCount >= needStar || needStar == 0;
+        cLevel.cupHit = cLevel.cupHit || hitCount >= needHit || needHit == 0;
+
+        PlayerModel.Instance.SavePlayerData();
     }
 
     //UI动画
