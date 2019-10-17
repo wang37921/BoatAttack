@@ -19,13 +19,13 @@ public class Gas : MonoBehaviour
         _seconds = Random.Range(_minSeconds, _maxSeconds);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        var boatCtrl = other.gameObject.GetComponent<MyBoatController>();
-        if (boatCtrl != null)
-        {
-            boatCtrl.AddFuel(_seconds);
-            gameObject.SetActive(false);
-        }
-    }
+    // private void OnTriggerEnter(Collider other)
+    // {
+    //     var boatCtrl = other.gameObject.GetComponent<MyBoatController>();
+    //     if (boatCtrl != null)
+    //     {
+    //         boatCtrl.AddFuel(_seconds);
+    //         gameObject.SetActive(false);
+    //     }
+    // }
 }

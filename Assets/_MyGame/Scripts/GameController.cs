@@ -60,10 +60,18 @@ public class GameController : MonoBehaviour
 
     [SerializeField]
     Tsunami _tsunami;
+    [SerializeField]
+    MyBoatController _boat;
     int _allStarCount = 0;
-    
+
     [SerializeField]
     string _levelNamePrefix = "Level";
+
+    [SerializeField]
+    GameObject _vCameraNear;
+    [Range(1, 100)]
+    public float nearDistance = 30;
+
 
 
     public const string _kBestRecord = "bestrecord";
@@ -97,6 +105,13 @@ public class GameController : MonoBehaviour
     public bool IsGaming => _state == GameState.Gaming;
     public bool IsPausing => _state == GameState.Pause;
 
+    public float TsunamiDistance => Mathf.Abs(_tsunami.transform.position.z - _boat.transform.position.z);
+
+    private void FixedUpdate()
+    {
+        // 摄像机
+        _vCameraNear.SetActive(TsunamiDistance < nearDistance);
+    }
 
     public void StartGame()
     {
@@ -109,7 +124,6 @@ public class GameController : MonoBehaviour
     {
         _state = GameState.Gaming;
         _windowHUD.SetActive(true);
-        var myboat = FindObjectOfType<MyBoatController>();
         _tsunami.StartMove();
     }
 

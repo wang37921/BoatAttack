@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using BoatAttack.Boat;
+using DG.Tweening;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -10,7 +11,7 @@ using UnityEditor;
 
 public class MyBoatController : MonoBehaviour
 {
-    public int maxHP = 100;
+    int maxHP = 100;
     [HideInInspector]
     public int HP = 100;
     [HideInInspector]
@@ -18,13 +19,10 @@ public class MyBoatController : MonoBehaviour
 
     float _timer = 0;
 
-    [SerializeField]
     int _HPExpend = 30;
 
     [ReadOnly]
-    [SerializeField]
     float _leftSeconds = 0.0f;
-    [SerializeField]
     float _maxSeconds = 10.0f;
 
     [SerializeField]
@@ -34,19 +32,17 @@ public class MyBoatController : MonoBehaviour
     [SerializeField]
     public Engine _engine = null; // the engine script
 
-    [SerializeField]
     float _maxTurn = 0.4f;
+    [SerializeField]
+    [Range(0.5f, 1.5f)]
+    float _turnSpeed = 1.0f;
     [SerializeField]
     float _accel = 1.0f;
 
 
-    [SerializeField]
     bool _showLines = true;
-    [SerializeField]
     bool _showMore = false;
-    [SerializeField]
     float _lineLength = 30;
-    [SerializeField]
     int _backFixedUpdateCount = 120;
     Vector3[] dirs1 = new Vector3[6], dirs2 = new Vector3[6];
 
@@ -55,13 +51,20 @@ public class MyBoatController : MonoBehaviour
     float _zEnd, _zStart, _zNow;
     Rigidbody _rigidbody;
 
+    [HideInInspector]
     public float accTimer = 0;
+
+
+    bool _lastInWater = true;
+
 
     public float Distance => _distance;
     public int Hit { get; set; }
     public bool InWater => _engine.InWater;
     public float Progress => Mathf.Clamp((_zNow - _zStart) / (_zEnd - _zStart), 0f, 1f);
     public float GameTime { get => _timer; }
+
+
 
 
     public void ResetDistance()
@@ -106,7 +109,6 @@ public class MyBoatController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-
         if (GameController.Instance.IsGaming)
         {
             _timer += Time.fixedDeltaTime;
@@ -115,33 +117,34 @@ public class MyBoatController : MonoBehaviour
 
             _leftSeconds -= Time.fixedDeltaTime;
             _leftSeconds = Mathf.Max(_leftSeconds, 0.0f);
-            if (_leftSeconds != 0.0f)
+            // if (_leftSeconds != 0.0f)
             {
                 _engine.Accel(_accel);
 
                 var input = Input.anyKey || Input.GetMouseButton(0);
                 if (input) // Acceleration
-                    _engine.Turn(_maxTurn);
+                    _engine.Turn(_maxTurn * _turnSpeed);
                 else
-                    _engine.Turn(-_maxTurn);
+                    _engine.Turn(-_maxTurn * _turnSpeed);
 
                 var dotVal = Mathf.Abs(Vector3.Dot(_rigidbody.velocity.normalized, transform.forward));
                 _distance = (transform.position - _originPoint).magnitude;
             }
-            else
-                OnFuelOver();
+            // else
+            //     OnFuelOver();
 
-            _moveDataQueue.Enqueue(new MoveData
-            {
-                accTimer = this.accTimer,
-                position = transform.position,
-                rotate = transform.rotation,
-                velocity = _rigidbody.velocity,
-                angularVelocity = _rigidbody.angularVelocity
-            });
-            if (_moveDataQueue.Count > _backFixedUpdateCount)
-                _moveDataQueue.Dequeue();
+            // _moveDataQueue.Enqueue(new MoveData
+            // {
+            //     accTimer = this.accTimer,
+            //     position = transform.position,
+            //     rotate = transform.rotation,
+            //     velocity = _rigidbody.velocity,
+            //     angularVelocity = _rigidbody.angularVelocity
+            // });
+            // if (_moveDataQueue.Count > _backFixedUpdateCount)
+            //     _moveDataQueue.Dequeue();
 
+            FixDir();
         }
     }
 
@@ -161,10 +164,10 @@ public class MyBoatController : MonoBehaviour
         _crashed = false;
     }
 
-    void OnFuelOver()
-    {
-        GameController.Instance.GameOver(_distance, Hit);
-    }
+    // void OnFuelOver()
+    // {
+    //     GameController.Instance.GameOver(_distance, Hit);
+    // }
 
     public bool HasCrash { get { return _crashed; } }
 
@@ -172,13 +175,13 @@ public class MyBoatController : MonoBehaviour
     public bool HasFuel => _leftSeconds != 0.0f;
 
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (GameController.Instance.IsGaming && collision.gameObject.layer == LayerMask.NameToLayer("TrackBlock"))
-        {
-            Hurt();
-        }
-    }
+    // private void OnCollisionEnter(Collision collision)
+    // {
+    //     if (GameController.Instance.IsGaming && collision.gameObject.layer == LayerMask.NameToLayer("TrackBlock"))
+    //     {
+    //         Hurt();
+    //     }
+    // }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -192,6 +195,7 @@ public class MyBoatController : MonoBehaviour
         }
     }
 
+    #region 
     public void Hurt()
     {
         HP -= _HPExpend;
@@ -297,6 +301,8 @@ public class MyBoatController : MonoBehaviour
     }
 #endif
  */
+    #endregion
+
     public void ResetByTime()
     {
         if (_moveDataQueue.Count > 1)
@@ -313,4 +319,55 @@ public class MyBoatController : MonoBehaviour
 
         GameController.Instance.Reset();
     }
+
+
+    [HideInInspector]
+    public Vector3? accDir = null;
+
+    [SerializeField]
+    bool _fixRotate = true;
+
+    [SerializeField]
+    [Range(0, 0.25f)]
+    float _maxFixIntensity = 0.1f;
+    [SerializeField]
+    float _fixDuration = 3;
+    float _fixIntensity = 0.1f;
+    bool _needFix = false;
+
+
+    void FixDir()
+    {
+        if (!_fixRotate)
+            return;
+
+        // 加速后第一次入水
+        if (accDir != null && InWater && !_lastInWater)
+        {
+            _fixIntensity = _maxFixIntensity;
+            _needFix = true;
+            DOTween.To(() => { return _fixIntensity; }, (intensity) => { _fixIntensity = intensity; }, 0f, _fixDuration).onComplete += () =>
+            {
+                _needFix = false;
+                accDir = null;
+            };
+        }
+        _lastInWater = InWater;
+
+        if (_needFix && accDir != null)
+            Rotate2Dir(accDir.Value, _fixIntensity);
+
+        // Debug.Log(_fixIntensity);
+    }
+
+    void Rotate2Dir(Vector3 dir, float intensity)
+    {
+        Vector3 targetDir = new Vector3(dir.x, 0, dir.z);
+        Vector3 nowDir = transform.forward;//new Vector3(transform.forward.x, 0, transform.forward.z);
+        var toDir = Vector3.Lerp(nowDir, targetDir, intensity);
+
+        var rotate = Quaternion.FromToRotation(nowDir, toDir);
+        transform.Rotate(rotate.eulerAngles, Space.World);
+    }
+
 }

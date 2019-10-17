@@ -12,10 +12,11 @@ public class AccelArea : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
         var collider = other.collider;
-
-        if (collider.GetComponent<MyBoatController>().accTimer < -1)
+        var boat = collider.GetComponent<MyBoatController>();
+        if (boat.accTimer < -1)
         {
-            collider.GetComponent<MyBoatController>().accTimer = 0;
+            boat.accTimer = 0;
+            boat.accDir = transform.forward;
             collider.GetComponent<Rigidbody>().AddForce(transform.forward * _speed, ForceMode.Acceleration);
         }
     }

@@ -26,6 +26,9 @@ public class WindowNext : MonoBehaviour
     [SerializeField]
     CanvasGroup[] _performances = new CanvasGroup[3];
 
+    [SerializeField]
+    GridLayoutGroup[] layoutGroups;
+
 
     private void OnEnable()
     {
@@ -80,6 +83,13 @@ public class WindowNext : MonoBehaviour
             _txtHit.text = "<color=#dbdbdb>" + hitCount + "</color>/" + needHit;
         _cupHit.gameObject.SetActive(hitCount >= needHit || needHit == 0 ? true : false);
 
+        // 刷新布局
+        foreach (var item in layoutGroups)
+        {
+            item.enabled = false;
+            item.enabled = true;
+        }
+
         //保存数据
         var cLevel = PlayerModel.Instance.currentLevel;
         cLevel.cupTime = cLevel.cupTime || time <= cLevelData.Time;
@@ -92,6 +102,14 @@ public class WindowNext : MonoBehaviour
     //UI动画
     public void FadeCanvasGroup(int index)
     {
-        DOTween.To(() => _performances[index].alpha, x => _performances[index].alpha = x, 1, 1).SetEase(Ease.InBack);
+        foreach (var item in layoutGroups)
+        {
+            item.enabled = false;
+            item.enabled = true;
+        }
+        DOTween.To(() => _performances[index].alpha, x => _performances[index].alpha = x, 1, 1).SetEase(Ease.InBack).onComplete += () =>
+        {
+
+        };
     }
 }

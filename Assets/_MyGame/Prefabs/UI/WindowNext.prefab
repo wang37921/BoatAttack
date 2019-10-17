@@ -1098,7 +1098,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_MethodName: Restart
+        m_MethodName: Next
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1401,6 +1401,9 @@ MonoBehaviour:
   - {fileID: 440797051330616644}
   - {fileID: 6488189911894882425}
   - {fileID: 5244202458840822342}
+  layoutGroups:
+  - {fileID: 1639835267199919109}
+  - {fileID: 4695348628508230627}
 --- !u!1 &4330647300002543379
 GameObject:
   m_ObjectHideFlags: 0
